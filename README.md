@@ -542,3 +542,11 @@ Co się dzieje?
 ```
 callback=alert
 ```
+!Notatka -> często strony nie pozwalają na zapytania GET z body, wtedy można spróbować nadpisać metodę:
+```
+GET /?param=innocent HTTP/1.1
+Host: innocent-website.com
+X-HTTP-Method-Override: POST
+…
+param=bad-stuff-here
+```
