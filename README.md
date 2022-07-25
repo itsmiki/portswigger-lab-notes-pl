@@ -476,3 +476,5 @@ Możliwa obfuskacja alert() może być alert``
 5. Do nagłówka dodajemy także `Access-Allow-Origin: *`, aby ominąć CORS
 
 ## Lab: Web cache poisoning via an unkeyed query string / Lab: Web cache poisoning via an unkeyed query parameter
+	    1. sada
+	    2. dswds
