@@ -475,6 +475,11 @@ Możliwa obfuskacja alert() może być alert``
 	{ "country": "<img src=1 onerror=alert(document.cookie)>" }
 5. Do nagłówka dodajemy także `Access-Allow-Origin: *`, aby ominąć CORS
 
-## Lab: Web cache poisoning via an unkeyed query string / Lab: Web cache poisoning via an unkeyed query parameter
-	    1. sada
-	    2. dswds
+## Lab: Web cache poisoning via an unkeyed query string
+1. Zauważamy, że niezależnie od dodania parametrów w `GET /`, cały czas dostajemy ten sam cache, oznacza to, że patametry są "unkeyd"
+2. Używając Param Minera, znajdujemy nagłówek Origin, który można użyć jako cahce bustera
+3. Link, który podajemy w parametrze get jest wpisywany do pola head
+4. Aby wyjść z pola i wykonać skrypt używamy payloadu:
+	    GET /?param='><script>alert(1)</script>
+
+## Lab: Web cache poisoning via an unkeyed query parameter
