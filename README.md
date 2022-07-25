@@ -480,6 +480,7 @@ Możliwa obfuskacja alert() może być alert``
 2. Używając Param Minera, znajdujemy nagłówek Origin, który można użyć jako cahce bustera
 3. Link, który podajemy w parametrze get jest wpisywany do pola head
 4. Aby wyjść z pola i wykonać skrypt używamy payloadu:
-	    GET /?param='><script>alert(1)</script>
-
+```
+GET /?param='><script>alert(1)</script>
+```
 ## Lab: Web cache poisoning via an unkeyed query parameter
