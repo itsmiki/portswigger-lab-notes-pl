@@ -534,3 +534,11 @@ Co się dzieje?
 	- `callback=setCountryCookie`
 	- `utm_content=123`
 	- `callback=alert`, I NIM NADPISUJE PIERWSZY Z PARAMETRÓW
+
+## Lab: Web cache poisoning via a fat GET request
+1. Zauważamy, że możemy nadpisać parametr z adresu URL parametrem w body
+2. Tak jak w poprzednim przykładzie mamy zapytanie: `GET /js/geolocate.js?callback=setCountryCookie`
+3. W body dopisujemy
+```
+callback=alert
+```
