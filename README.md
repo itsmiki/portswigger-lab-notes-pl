@@ -550,3 +550,9 @@ X-HTTP-Method-Override: POST
 …
 param=bad-stuff-here
 ```
+
+## Lab: URL normalization
+1. Zauważamy, że czegokolwiek nie wpiszemy do GET /[cokolwiek] serwer wyświetla stronę z napisanym: `Not Found: [cokolwiek]`
+2. W Burp Reapeterze wpisujemy zatem GET /<script>aletr()</script>, co jest cachowane
+3. Ofierze wysyłamy link `https://0a7d002d04cfd55ac0c47e8400c90006.web-security-academy.net/<script>alert(1)</script>`, który przeglądarka przekształci na `https://0a7d002d04cfd55ac0c47e8400c90006.web-security-academy.net/%3Cscript%3Ealert(1)%3C/script%3E`
+4. Dla serwera jednak są to tożsame zapytania, dlatego wyświetli zcachowana odpowiedź z wykonywalnym skryptem
