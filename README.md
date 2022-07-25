@@ -515,4 +515,22 @@ GET /?param='><script>alert(1)</script>
 ```
 GET /?utm_content='><script>alert(1)</script>
 ```
-
+## Lab: Parameter cloaking
+1. Używając Param Minera -> `Guess GET Parameters`, znajdujemy parametr, który nie wpływa na cachowanie, jest to utm_content
+2. Znajdujemy plik /js/geolocate.js, który wywoływany jest przy ładownaiu strony zapytaniem /js/geolocate?callback=setCountryCookie
+3. Próbując wpisywać różne payloady zayważamy, że `;` nie przerywa zapytania, a jest interpretowany jako dalsza część parametru
+4. Inaczej jest jednak na back endzie, gdzie jest interpretowany jako przerwa i następuje po nim inna zmienna
+5. Dodatkowo jeżeli znienne mają takie same nazwy pierwsza zostaje nadpisana przez drugą, jednak w cachu zostaje zapamiętana pierwsza z nich
+6. Konstruujemy zatem payload
+``` 
+GET /js/geolocate.js?callback=setCountryCookie&utm_content=123;callback=alert
+```
+Co się dzieje?
+- serwer cachujący widzi zapytanie z dwoma parametrami: 
+	- `callback=setCountryCookie`, które jest kluczem w cachu oraz 
+	- `utm_content=123;callback=alert` czyli parametr utm_content, który cachowany nie jest
+	- SERWER ZATEM CACHUJE ZAPYTANIE DLA `callback=setCountryCookie`
+- serwer na backendzie (tutaj Ruby on Rails) widzi trzy parametry:
+	- `callback=setCountryCookie`
+	- `utm_content=123`
+	- `callback=alert`, I NIM NADPISUJE PIERWSZY Z PARAMETRÓW
