@@ -565,3 +565,10 @@ param=bad-stuff-here
 3. Robimy zatem reset hasła dla użytkownika carlos wstawiając do pola `Host` adres serwera exploit
 4. Z racji, że carlos klika w każdy link, to w Access Logu mamy zapytanie zawierające token do zmiany hasła
 5. Używając go zmieniamy hasło carlosa
+
+## Lab: Web cache poisoning via ambiguous requests
+1. Testujemy działanie pola `Host`
+2. Zauważamy, że jego wartość jest (najprawdopodobniej wpisywana w pole z linkiem do pliku .js: .../resources/js/tracking.js
+3. Jeżeli zmienimy adres host dostajemy błąd, ponieważ pośredniczący serwer najprawdopodobiej nie ma dostępu do serwera o takiej domenie
+4. Jeżeli natomiast dopiszemy drugi taki samo pole `Host`, jednak podamy tam inną wartość zapytanie zadziała a do dokumentu zostanie wpisana wartość ze zduplikowanego pola
+5. 5. Do drugirgo pola wpisujemy adres serwera exploit, a na nim dajemy odpowiednią ścieżkę oraz w body `alert(document.cookie)`
