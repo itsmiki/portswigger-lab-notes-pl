@@ -576,3 +576,16 @@ param=bad-stuff-here
 3. Jeżeli zmienimy adres host dostajemy błąd, ponieważ pośredniczący serwer najprawdopodobiej nie ma dostępu do serwera o takiej domenie
 4. Jeżeli natomiast dopiszemy drugi taki samo pole `Host`, jednak podamy tam inną wartość zapytanie zadziała a do dokumentu zostanie wpisana wartość ze zduplikowanego pola
 5. Do drugirgo pola wpisujemy adres serwera exploit, a na nim dajemy odpowiednią ścieżkę oraz w body `alert(document.cookie)`
+
+# OAuth 2.0
+
+## Lab: Forced OAuth profile linking
+1. Logujemy się i przechodzimy przez cały proces łączenia konta na stronie z tym na mediach społecznościowych.
+2. Widzimy, że można teraz zalogować się zarówno kontem na stronie, jak i tym z mediów społecznościowych (teraz już bez wpisywania danych, ale nie ma to znaczenia)
+3. Musimy zatem stworzyć payload, którym administrator połączy nasze konto (z mediów społecznościowych) ze swoim na stronie
+4. Przechodzimy znowu do łacznia konta z kontem z mediami połecznościowymi i dochodzimy do momentu, gdzie mamy wygenerowane i pokazane client_id, jest to id klienta, z którego kontem będzie połączone konto z MS, nie ma tokenu CSRF (w OAuth jest to parametr `state`), a zatem i ochrony przed takim atakiem
+5. W tym momencie dropujemy request, aby kod client_id nie został zużyty i link przesyłamy do ofiary w następującej formie:
+```
+<iframe src="https://0a4d004f04cb3a63c0382da90041006d.web-security-academy.net/oauth-linking?code=aKsHIS3bGFzKEN-EDD0918bQIjTaeSLtw0mmnW4v8e8"> </iframe>
+```
+6. Następnie logujemy się przez konto społecznościowe i zostajemy przekierowani na konto administracyjne, skąd usówamy carlosa
