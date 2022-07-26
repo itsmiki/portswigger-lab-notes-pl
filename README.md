@@ -555,4 +555,12 @@ param=bad-stuff-here
 1. Zauważamy, że czegokolwiek nie wpiszemy do GET /[cokolwiek] serwer wyświetla stronę z napisanym: `Not Found: [cokolwiek]`
 2. W Burp Reapeterze wpisujemy zatem GET /<script>aletr()</script>, co jest cachowane
 3. Ofierze wysyłamy link `https://0a7d002d04cfd55ac0c47e8400c90006.web-security-academy.net/<script>alert(1)</script>`, który przeglądarka przekształci na `https://0a7d002d04cfd55ac0c47e8400c90006.web-security-academy.net/%3Cscript%3Ealert(1)%3C/script%3E`
-4. Dla serwera jednak są to tożsame zapytania, dlatego wyświetli zcachowana odpowiedź z wykonywalnym skryptem
+4. Dla serwera jednak są to tożsame zapytania, dlatego wyświetli zcachowana odpowiedź z wykonywalnym skryptem'
+
+
+## Lab: Basic password reset poisoning
+1. Sprawdzamy działanie mechanizmu zmiany hasła na swoim koncie
+2. Testując podmienianie adresu w różnych polach nagłówka zauważamy, że email wysyłany jest z linkiem do domeny podanej w nagłówku `Host`
+3. Robimy zatem reset hasła dla użytkownika carlos wstawiając do pola `Host` adres serwera exploit
+4. Z racji, że carlos klika w każdy link, to w Access Logu mamy zapytanie zawierające token do zmiany hasła
+5. Używając go zmieniamy hasło carlosa
