@@ -668,6 +668,6 @@ Nagłówek JWK mówi serwerowi jaki klucz powinien zostać użyty do sprawdzenia
 ```
 Zasadniczo powinna istnieć white-lista kluczy, których może używać serwer, jednak może się zdarzyć, że takowa nie istnieje i wtedy serwer użyje dowolnego podanego klucz w tym nagłówku i taki właśnie przypadek występuje w tym zadaniu.
 1. Aby wykorzystać taką podatność zaczynamy od wygenerowania własnego klucza w JWT Editor Keys -> Generate RSA Key -> Generate
-2. Przechodzimy do Burp Reapeatera z zapyatniem na /admin
+2. Przechodzimy do Burp Reapeatera z zapyatniem na `/admin`
 3. W cookei modyfikujemy nazwę użytkownika na admin i klikamy Attack -> Embedded JWK i dodajemy wcześniej stworzony klucz.
-4. Taki token kopiujemy i wklejamy do cookie, aby jużź jako administrator zalogować się do panelu administracyjnego.
+4. Taki token kopiujemy i wklejamy do cookie, aby już jako administrator zalogować się do panelu administracyjnego.
