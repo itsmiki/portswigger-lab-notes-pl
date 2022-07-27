@@ -613,6 +613,13 @@ eyJraWQiOiI5MTM2ZGRiMy1jYjBhLTRhMTktYTA3ZS1lYWRmNWE0NGM4YjUiLCJhbGciOiJSUzI1NiJ9
 header_base64.payload_base64.signature
 ```
 ```
+Header decoded:
+{
+    "kid":"9136ddb3-cb0a-4a19-a07e-eadf5a44c8b5",
+    "alg":"RS256"
+}
+
+Payload decoded:
 {
     "iss": "portswigger",
     "exp": 1648037164,
@@ -622,6 +629,7 @@ header_base64.payload_base64.signature
     "email": "carlos@carlos-montoya.net",
     "iat": 1516239022
 }
+
 ```
 ## Lab: JWT authentication bypass via flawed signature verification
 1. Widzimy, że w nagłówku jest podany jaki algorytm podpisu jest używany.
