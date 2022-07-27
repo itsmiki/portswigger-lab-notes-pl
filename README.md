@@ -647,6 +647,6 @@ Payload decoded:
 hashcat -a 0 -m 16500 <YOUR-JWT> /path/to/jwt.secrets.list
 ```
 4. Znajdujemy klucz `secret1` i importujemy go do `JWT Editora`:
-5. JWT Editor Keys -> Add Symertic Key -> Generate -> podmieniamy k na secret1 zakodowane w base64, czyli `c2VjcmV0MQ==`
+5. JWT Editor Keys -> Add Symertic Key -> Generate -> podmieniamy `k` na `secret1` zakodowane w base64, czyli `c2VjcmV0MQ==`
 6. Wchodzimy do zakładki JWT Editor w Burp Reapeter podmieniamy nazwę użytkownika w payloadzie i podpisujemy
 7. Następnie tak skonstruowsane JWT przeklejamy do cookie i wchodzimy na panel administracyjny.
