@@ -638,3 +638,15 @@ Payload decoded:
 4. W payloadzie podmieniamy zatem nazwę użytkownika na administrator oraz algorytm podpisywania na none, (pamiętać, że none również wpisujemy w `" "`
 5. Usuwamy podpis z payloadu
 6. Logujmy się podmieniając stare cookie na nowo stworzony payload
+
+## Lab: JWT authentication bypass via weak signing key
+1. Logujemy się i znajdujemy JWT, do panelu administracyjnego możemy dostać się poprzez konto administratora
+2. Wystarczy zmienić nazwę użytkownika w JWT oraz podpisać je odpowiednim kluczem
+3. Aby poznać klucz musimy złamać klucz używamy listy popularnych kluczy: https://github.com/wallarm/jwt-secrets/blob/master/jwt.secrets.list oraz hashcata:
+```
+hashcat -a 0 -m 16500 <YOUR-JWT> /path/to/jwt.secrets.list
+```
+4. Znajdujemy klucz `secret1` i importujemy go do `JWT Editora`:
+5. JWT Editor Keys -> Add Symertic Key -> Generate -> podmieniamy k na secret1 zakodowane w base64, czyli `c2VjcmV0MQ==`
+6. Wchodzimy do zakładki JWT Editor w Burp Reapeter podmieniamy nazwę użytkownika w payloadzie i podpisujemy
+7. Następnie tak skonstruowsane JWT przeklejamy do cookie i wchodzimy na panel administracyjny.
