@@ -650,3 +650,24 @@ hashcat -a 0 -m 16500 <YOUR-JWT> /path/to/jwt.secrets.list
 5. JWT Editor Keys -> Add Symertic Key -> Generate -> podmieniamy `k` na `secret1` zakodowane w base64, czyli `c2VjcmV0MQ==`
 6. Wchodzimy do zakładki JWT Editor w Burp Reapeter podmieniamy nazwę użytkownika w payloadzie i podpisujemy
 7. Następnie tak skonstruowsane JWT przeklejamy do cookie i wchodzimy na panel administracyjny.
+
+## Lab: JWT authentication bypass via jwk header injection
+Nagłówek JWK mówi serwerowi jaki klucz powinien zostać użyty do sprawdzenia podpisu w wiadomości. Przykład takiego nagłówka:
+```
+{
+    "kid": "ed2Nf8sb-sD6ng0-scs5390g-fFD8sfxG",
+    "typ": "JWT",
+    "alg": "RS256",
+    "jwk": {
+        "kty": "RSA",
+        "e": "AQAB",
+        "kid": "ed2Nf8sb-sD6ng0-scs5390g-fFD8sfxG",
+        "n": "yy1wpYmffgXBxhAUJzHHocCuJolwDqql75ZWuCQ_cb33K2vh9m"
+    }
+}
+```
+Zasadniczo powinna istnieć white-lista kluczy, których może używać serwer, jednak może się zdarzyć, że takowa nie istnieje i wtedy serwer użyje dowolnego podanego klucz w tym nagłówku i taki właśnie przypadek występuje w tym zadaniu.
+1. Aby wykorzystać taką podatność zaczynamy od wygenerowania własnego klucza w JWT Editor Keys -> Generate RSA Key -> Generate
+2. Przechodzimy do Burp Reapeatera z zapyatniem na /admin
+3. W cookei modyfikujemy nazwę użytkownika na admin i klikamy Attack -> Embedded JWK i dodajemy wcześniej stworzony klucz.
+4. Taki token kopiujemy i wklejamy do cookie, aby jużź jako administrator zalogować się do panelu administracyjnego.
