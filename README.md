@@ -710,3 +710,17 @@ Pole `jku` w JWT zawiera link do strony z kluczami, które należy użyć do wer
 ```
 4. Username podnieniamy na administrator, a gotowy payload podpisujemy wygenerowanym wcześniej kluczem
 5. Używamy payloadu do zalogowania
+
+## Lab: JWT authentication bypass via kid header path traversal
+W polu `kid` w JWT podawane jest id klucza, może być to także ścieżka do niego, co, źle zabezpieczone umożliwia path traversal.
+1. Tworzymy klucz symetryczny o wartości zakodowanego w base64 znaku null (`AA==`)
+2. Tworzymy zapytanie na `/admin` i przesyłamy do reapeatera.
+3. W JWT zmieniamy nazwę użytkownika na administrator, a w polu `kid` dajemy ścieżkę do `/dev/null`, ponieważ wiadomo, że ten plik jest pusty, a zatem zapytanie do niego zwróci wartość null 
+```
+{
+    "kid": "../../../../../../../../../../../../dev/null",
+    "alg": "HS256"
+}
+```
+Dajemy dużo `../` ponieważ chemy się cofnąć do najniższego katalogu, a zbyt duża liczba cofnięć po prostu zostanie pominięta.
+4. Podpisujemy JWT wcześniej wygenerowanym kluczem i z użyciem paylodu logujemy się na konto administracyjne.
