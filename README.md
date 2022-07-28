@@ -724,3 +724,35 @@ W polu `kid` w JWT podawane jest id klucza, może być to także ścieżka do ni
 ```
 Dajemy dużo `../` ponieważ chemy się cofnąć do najniższego katalogu, a zbyt duża liczba cofnięć po prostu zostanie pominięta.
 4. Podpisujemy JWT wcześniej wygenerowanym kluczem i z użyciem paylodu logujemy się na konto administracyjne.
+
+## Lab: JWT authentication bypass via algorithm confusion
+Czasami pomimo tego, że serwer używa do weryfikacji tylko kryptografii asymetrycznej w kodzie znajduje się taki sam rodzaj weryfikacji, tylko z kluczem symetrycznym (zostaje to zostawione z gotowej implementacji).
+```
+function verify(token, secretOrPublicKey){
+    algorithm = token.getAlgHeader();
+    if(algorithm == "RS256"){
+        // Use the provided key as an RSA public key
+    } else if (algorithm == "HS256"){
+        // Use the provided key as an HMAC secret key
+    }
+}
+```
+Z racji, że zakładane jest, że użyta zostanie jedynie kryptografia asymetryczna, klucz publiczny jest zakodowany w pliku.
+```
+publicKey = <public-key-of-server>;
+token = request.getCookie("session");
+verify(token, publicKey);
+```
+Wtedy może pojawić się sytuacja, w której podamy JWT podpisane kluczem publicznym (tym z serwera), bo często znajduje się on jako publiczna dana np. w `/jwks.json` lub `/.well-known/jwks.json` oraz dopisujemy, że algorytmem ma być HS256, a wtedy serwer zweryfikuje wiadomość dokładnie tym samym kluczem, a zatem weryfikacja zakończy się sukcesem, bo używana będzie kryptografia symetryczna, a klucze będą te same.
+1. Aby dostać się na panel administracyjny `/admin` musimy być na koncie administratora
+2. Znajdujemy klucz publiczny strony w katalogu `/jwks.json` i kopiujemy ten obiekt.
+3. W `JWT Editor Keys` dodajemy nowy klucz RSA i wklejamy tam znaleziony klucz publiczny ze strony
+4. Kopiujemy klucz publiczny w formacie PEM
+5. W decoderze zamieniamy go na base64
+6. W `JWT Keys Editor` tworzymy klucz symetryczny, klikamy generate i w pole `k` wpisujemy klucz publiczny w base64
+7. Przechodzimy do `Burp Reapeatera` i z zakładce JWT, jako użytkownika dajemy administrator, a jako alg `HS256`
+8. Podpisujemy wcześniej wygenerowanym kluczem symetrycznym
+9. Logujemy się na konto administratora przy pomocy gotowego JWT
+
+
+
