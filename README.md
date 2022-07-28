@@ -672,7 +672,7 @@ Zasadniczo powinna istnieć white-lista kluczy, których może używać serwer, 
 3. W cookei modyfikujemy nazwę użytkownika na admin i klikamy Attack -> Embedded JWK i dodajemy wcześniej stworzony klucz.
 4. Taki token kopiujemy i wklejamy do cookie, aby już jako administrator zalogować się do panelu administracyjnego.
 
-# Lab: JWT authentication bypass via jku header injection
+## Lab: JWT authentication bypass via jku header injection
 Pole `jku` w JWT zawiera link do strony z kluczami, które należy użyć do weryfikacji podpisu. Jeśli nie jest ona odpowiednio weryfikowana można to wykorzystać do podania własnego klucza. Klucze są zapisane w takiej formie:
 ```
 {
