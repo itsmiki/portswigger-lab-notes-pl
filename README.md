@@ -749,7 +749,7 @@ Wtedy może pojawić się sytuacja, w której podamy JWT podpisane kluczem publi
 3. W `JWT Editor Keys` dodajemy nowy klucz RSA i wklejamy tam znaleziony klucz publiczny ze strony
 4. Kopiujemy klucz publiczny w formacie PEM
 5. W decoderze zamieniamy go na base64
-6. W `JWT Keys Editor` tworzymy klucz symetryczny, klikamy generate i w pole `k` wpisujemy klucz publiczny w base64
+6. W `JWT Editor Keys` tworzymy klucz symetryczny, klikamy generate i w pole `k` wpisujemy klucz publiczny w base64
 7. Przechodzimy do `Burp Reapeatera` i z zakładce JWT, jako użytkownika dajemy administrator, a jako alg `HS256`
 8. Podpisujemy wcześniej wygenerowanym kluczem symetrycznym
 9. Logujemy się na konto administratora przy pomocy gotowego JWT
