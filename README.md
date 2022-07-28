@@ -759,6 +759,7 @@ Zadanie bliźnieacze do poprzedniego, ale klucz nie jest publiczny.
 1. Logujemy się na konto, zdobywamy pierwsze JWT i je zapisujemy.
 2. Wylogowujemy się i logujemy się ponownie zdobywając drugie JWT.
 3. Za pomocą programu sig2n dodając jako atgumenty dwa znalezione JWT dostajemy potencjalne klucze wraz z podpisanymi payloadami.
+
 Komenda:
 ```
 docker run --rm -it portswigger/sig2n <token1> <token2>
