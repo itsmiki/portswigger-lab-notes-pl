@@ -14,6 +14,19 @@ Payload:
 </stockCheck>
 ```
 
+## Lab: Web shell upload via extension blacklist bypass
+1. W serwerach Apache istnieją pliki `.htaccess`, które opisują konfigurację dla folderu, w którym się znajdują i sub-folderów.
+2. Jeżeli możemy przesłać taki plik (i Apache jest podatne), to możemy opisać, np. w jaki sposób mają być interpretowane pliki z danym rozszerzeniem.
+3. Przesyłamy zatem regułę, która nakazuje interpretować podane rozszerzenie jako php.
+Plik `.htaccess`, który uruchamia plik `.php5`:
+```
+AddType application/x-httpd-php .php5
+```
+4. Następnie przesyłamy plik z rozszerzeniem `.php5` i wchodząc na link, który do niego prowadzi otrzymujemy wynik działania komendy:
+```
+<?php echo file_get_contents('/home/carlos/secret'); ?>
+```
+
 ## Lab: Inconsistent handling of exceptional input
 ## Lab: Authentication bypass via flawed state machine
 ## Lab: Authentication bypass via encryption oracle
