@@ -165,7 +165,7 @@ X-Original-URL: /admin/delete
 fehost=someString"-alert(1)-"someString
 ```
 ## Insecure deserialization
-### 
+### Modifying serialized data types
 1. Podmieniamy obiekt na:
 ```
 O:4:"User":2:{s:8:"username";s:13:"administrator";s:12:"access_token";i:0;}
@@ -206,7 +206,7 @@ Host: YOUR-EXPLOIT-SERVER-ID.exploit-server.net
 2. Sprawdzamy czy konta są połączone
 
 ## File upload vulnerabilities
-### 
+### Remote code execution via polyglot web shell upload
 1. Uploadujemy ployglot.php
 2. Wchodzimy na stronę `/files/avatars/polyglot.php` i mamy sekres carlosa
 
